@@ -1,4 +1,4 @@
-import { RESOURCE_INFOS } from '../store/game/gameConstants';
+import { RESOURCE_INFOS } from 'store/game/gameConstants';
 
 function processCountChanges (
   countChanges, resourceCounts, costs, results, skipSideEffects, isSideEffect

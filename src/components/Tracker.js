@@ -6,12 +6,13 @@ import withStyles from 'react-jss';
 
 import { bindActionCreators } from 'redux';
 
-import { changeCount, changeProduction, nextGeneration } from '../store/game/gameActions';
-import { RESOURCE_TYPES, RESOURCE_INFOS } from '../store/game/gameConstants';
-import { showModal } from '../store/ui/uiActions';
-import { MODAL_TYPES } from '../store/ui/uiConstants';
+import { changeCount, changeProduction, nextGeneration } from 'store/game/gameActions';
+import { RESOURCE_TYPES, RESOURCE_INFOS } from 'store/game/gameConstants';
+import { showModal } from 'store/ui/uiActions';
+import { MODAL_TYPES } from 'store/ui/uiConstants';
 
-import Button from './Button';
+import Button from 'components/Button';
+
 
 const BottomButton = (props) => {
   const { icon, onPress, useDebounce } = props;
@@ -110,7 +111,7 @@ class Tracker extends Component {
       >
         <div style={ styles.header }>
           <If condition={ image }>
-            <img style={ styles.headerImage } src={ image } />
+            <img style={ styles.headerImage } alt='' src={ image } />
           </If>
           <If condition={ showTitle }>
             <div style={ headerTextStyle }>{ title }</div>

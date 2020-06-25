@@ -2,10 +2,10 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 
 import thunk from 'redux-thunk';
 
-import game from './game/gameReducer';
-import gameMiddleware from './game/gameMiddleware';
-import ui from './ui/uiReducer';
-import uiMiddleware from './ui/uiMiddleware';
+import game from 'store/game/gameReducer';
+import gameMiddleware from 'store/game/gameMiddleware';
+import ui from 'store/ui/uiReducer';
+import uiMiddleware from 'store/ui/uiMiddleware';
 
 const rootReducer = combineReducers({
   game,

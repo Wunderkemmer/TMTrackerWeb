@@ -40,7 +40,9 @@ class Button extends Component {
   }
 
   onDown = (event) => {
-    if (event.target === this.buttonRef && !this.props.isDisabled) {
+    event.stopPropagation();
+
+    if (!this.props.isDisabled) {
       this.setState({ isPressed: true, showPressed: true });
     }
   };
@@ -51,20 +53,22 @@ class Button extends Component {
     }
   };
 
-  onOut = (event) => {
-    if (event.target === this.buttonRef && !this.props.isDisabled) {
+  onOut = () => {
+    if (!this.props.isDisabled) {
       this.setState({ showPressed: false });
     }
   };
 
   onOver = (event) => {
-    if (event.target === this.buttonRef && !this.props.isDisabled) {
+    event.stopPropagation();
+
+    if (!this.props.isDisabled) {
       this.setState({ showPressed: this.state.isPressed });
     }
   };
 
-  onUp = (event) => {
-    if (event.target === this.buttonRef && this.state.showPressed) {
+  onUp = () => {
+    if (this.state.showPressed) {
       const { onClick, useDebounce } = this.props;
 
       if (onClick) {
@@ -90,9 +94,18 @@ class Button extends Component {
       textClass,
     } = this.props;
 
+    let buttonStyle = this.state.isPressed ? classes.buttonPressed : classes.button;
+
+    if (className) {
+      buttonStyle = `${ buttonStyle } ${ className }`;
+    }
+
+    const iconStyle = iconClass ? `${ classes.icon } ${ iconClass }` : classes.icon;
+    const textStyle = textClass ? `${ classes.text } ${ textClass }` : classes.text;
+
     return (
       <div
-        className={ `${ classes.button } ${ className }` }
+        className={ buttonStyle }
         onPointerDown={ this.onDown }
         onPointerOut={ this.onOut }
         onPointerOver={ this.onOver }
@@ -101,10 +114,10 @@ class Button extends Component {
       >
         <div className={ classes.content }>
           <If condition={ icon }>
-            <Icon className={ `${ classes.icon } ${ iconClass }` } icon={ icon } />
+            <Icon className={ iconStyle } icon={ icon } />
           </If>
           <If condition={ text }>
-            <div className={ `${ classes.text } ${ textClass }` }>{ text }</div>
+            <div className={ textStyle }>{ text }</div>
           </If>
           { children }
         </div>
@@ -122,10 +135,15 @@ const styles = {
     borderRadius: (props) => props.borderRadius,
     boxShadow: (props) => props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,
     padding: (props) => props.padding,
+  },
 
-    '&:active': {
-      opacity: 0.5
-    }
+  buttonPressed: {
+    backgroundColor: (props) => props.isDisabled ? '#cccccc' : props.backgroundColor,
+    border: (props) => props.border,
+    borderRadius: (props) => props.borderRadius,
+    boxShadow: (props) => props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,
+    padding: (props) => props.padding,
+    opacity: 0.5
   },
 
   content: {
