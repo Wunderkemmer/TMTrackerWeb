@@ -1,6 +1,5 @@
 import If from 'components/If';
 import Tracker from 'components/Tracker';
-import logo from 'logo.svg';
 
 import onsenui, { notification } from 'onsenui';
 import 'onsenui/css/onsen-css-components.css';
@@ -37,25 +36,25 @@ class App extends Component<Props> {
     let history = localStorage.getItem('gameHistory');
 
     if (history) {
-      // history = JSON.parse(history);
-      //
-      // const { event, gameState } = history[history.length - 1];
-      // const { oceans, oxygen, temperature } = gameState.resourceCounts;
+      history = JSON.parse(history);
 
-      // const isGameInProgress = event !== 'newGame' &&
-      //   (oceans < RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount ||
-      //    oxygen < RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount ||
-      //    temperature < RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount);
-      //
-      // if (isGameInProgress) {
-      //   notification.alert('An in-progress game was found, do you want to restore it?', {
-      //     buttonLabels: [ 'No', 'Yes' ],
-      //     callback: (index) => index ? this.onSetHistory(history) : this.onStartGame(),
-      //     title: 'Load last game?'
-      //   });
-      //
-      //   return;
-      // }
+      const { event, gameState } = history[history.length - 1];
+      const { oceans, oxygen, temperature } = gameState.resourceCounts;
+
+      const isGameInProgress = event !== 'newGame' &&
+        (oceans < RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount ||
+         oxygen < RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount ||
+         temperature < RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount);
+
+      if (isGameInProgress) {
+        notification.alert('An in-progress game was found, do you want to restore it?', {
+          buttonLabels: [ 'No', 'Yes' ],
+          callback: (index) => index ? this.onSetHistory(history) : this.onStartGame(),
+          title: 'Load last game?'
+        });
+
+        return;
+      }
     }
 
     this.onStartGame();
@@ -75,20 +74,23 @@ class App extends Component<Props> {
 
   render () {
     const { classes } = this.props;
+    const { isLoading } = this.state;
 
     return (
       <Provider store={ store }>
         <div className={ classes.app }>
-          <div className={ classes.resourceRow }>
-            <Tracker type={ RESOURCE_TYPES.MEGACREDITS } />
-            <Tracker type={ RESOURCE_TYPES.STEEL } />
-            <Tracker type={ RESOURCE_TYPES.TITANIUM } />
-          </div>
-          <div className={ classes.resourceRow }>
-            <Tracker type={ RESOURCE_TYPES.PLANTS } />
-            <Tracker type={ RESOURCE_TYPES.ENERGY } />
-            <Tracker type={ RESOURCE_TYPES.HEAT } />
-          </div>
+          <If condition={ !isLoading }>
+            <div className={ classes.resourceRow }>
+              <Tracker type={ RESOURCE_TYPES.MEGACREDITS } />
+              <Tracker type={ RESOURCE_TYPES.STEEL } />
+              <Tracker type={ RESOURCE_TYPES.TITANIUM } />
+            </div>
+            <div className={ classes.resourceRow }>
+              <Tracker type={ RESOURCE_TYPES.PLANTS } />
+              <Tracker type={ RESOURCE_TYPES.ENERGY } />
+              <Tracker type={ RESOURCE_TYPES.HEAT } />
+            </div>
+          </If>
         </div>
       </Provider>
     );
