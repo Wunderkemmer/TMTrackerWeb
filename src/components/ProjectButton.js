@@ -20,12 +20,12 @@ import Ingredient from './Ingredient';
 
 class ProjectButton extends Component {
 
-  onPress = () => {
-    const { onPress, projectType } = this.props;
+  onClick = () => {
+    const { onClick, projectType } = this.props;
 
     this.props.actions.runProject(projectType);
 
-    onPress && onPress();
+    onClick && onClick();
   };
 
   render () {
@@ -54,7 +54,7 @@ class ProjectButton extends Component {
         style={ style }
         backgroundColor={ backgroundColor }
         isDisabled={ isDisabled }
-        onPress={ this.onPress }
+        onClick={ this.onClick }
         useDebounce={ true }
       >
         <If condition={ showEvent }>

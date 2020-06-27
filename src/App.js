@@ -1,6 +1,5 @@
-import Button from 'components/Button';
 import If from 'components/If';
-// import Tracker from 'components/Tracker';
+import Tracker from 'components/Tracker';
 import logo from 'logo.svg';
 
 import onsenui, { notification } from 'onsenui';
@@ -13,7 +12,7 @@ import { Provider } from 'react-redux';
 
 import store from 'store';
 
-// import { RESOURCE_INFOS, RESOURCE_TYPES } from 'store/game/gameConstants';
+import { RESOURCE_INFOS, RESOURCE_TYPES } from 'store/game/gameConstants';
 import GameState from 'store/game/gameState';
 import { setHistory, startGame } from 'store/ui/uiActions';
 
@@ -74,49 +73,22 @@ class App extends Component<Props> {
     this.setState({ isLoading: false });
   };
 
-  onClick = (text) => {
-    notification.alert(`You clicked ${ text }!`, {
-      buttonLabels: [ 'Ok' ],
-      title: 'Click!'
-    });
-  };
-
   render () {
     const { classes } = this.props;
-    const { isLoading } = this.state;
 
     return (
       <Provider store={ store }>
         <div className={ classes.app }>
-          <header className={ classes.appHeader }>
-            <If condition={ !isLoading }>
-              <img src={logo} className={ classes.appLogo } alt="logo" />
-              <p>
-                Edit <code>src/App.js</code> and save to reload.
-              </p>
-              <a
-                className={ classes.appLink }
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Learn React
-              </a>
-            </If>
-            <Button
-              className={ classes.heyButton }
-              icon="500px"
-              onClick={ () => this.onClick('Hey') }
-              text="Hey"
-            >
-              <Button
-                icon="ad"
-                onClick={ () => this.onClick('Yo') }
-                text="Yo"
-              />
-            </Button>
-            {/*<Tracker type="energy" />*/}
-          </header>
+          <div className={ classes.resourceRow }>
+            <Tracker type={ RESOURCE_TYPES.MEGACREDITS } />
+            <Tracker type={ RESOURCE_TYPES.STEEL } />
+            <Tracker type={ RESOURCE_TYPES.TITANIUM } />
+          </div>
+          <div className={ classes.resourceRow }>
+            <Tracker type={ RESOURCE_TYPES.PLANTS } />
+            <Tracker type={ RESOURCE_TYPES.ENERGY } />
+            <Tracker type={ RESOURCE_TYPES.HEAT } />
+          </div>
         </div>
       </Provider>
     );
@@ -126,46 +98,20 @@ class App extends Component<Props> {
 
 const styles = {
 
-  '@keyframes appLogoSpin': {
-    from: {
-      transform: 'rotate(0deg)'
-    },
-    to: {
-      transform: 'rotate(360deg)'
-    }
-  },
-
   app: {
-    textAlign: 'center'
-  },
-
-  appHeader: {
     backgroundColor: '#282c34',
     color: 'white',
     fontSize: 'calc(10px + 2vmin)',
+    textAlign: 'center',
     minHeight: '100vh',
     display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'center'
+    flexDirection: 'column'
   },
 
-  appLink: {
-    color: '#61dafb'
-  },
-
-  appLogo: {
-    height: '40vmin',
-    animation: '$appLogoSpin 5s alternate ease-in-out infinite',
-    pointerEvents: 'none'
-  },
-
-  heyButton: {
-    marginTop: '1rem'
-  },
-
-  gray: {
-    color: '#cccccc'
+  resourceRow: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'row'
   }
 
 };

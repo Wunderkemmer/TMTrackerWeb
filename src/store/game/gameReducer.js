@@ -84,7 +84,8 @@ export default (state = initialState, action) => {
 
       return GameState(gameState);
     }
-  }
 
-  return state;
+    default:
+      return state;
+  }
 }

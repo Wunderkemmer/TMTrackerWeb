@@ -55,7 +55,7 @@ export default function uiMiddleware (store) {
 
         setTimeout(() => onChangeGameState(store, action.payload), 0);
 
-        break;
+        return next(action);
 
       case UI_ADD_HISTORY:
       case UI_REDO:
@@ -66,9 +66,10 @@ export default function uiMiddleware (store) {
 
         setTimeout(() => onChangeHistory(store), 0);
 
-        break;
-    }
+        return next(action);
 
-    return next(action);
+      default:
+        return next(action);
+    }
   };
 }

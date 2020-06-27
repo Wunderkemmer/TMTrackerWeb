@@ -52,7 +52,7 @@ class Modal extends Component {
 
     return (
       <View style={ styles.modal }>
-        <TouchableWithoutFeedback onPress={ hide }>
+        <TouchableWithoutFeedback onClick={ hide }>
           <View style={ styles.overlay } />
         </TouchableWithoutFeedback>
         <View style={ [ styles.defaultPopup, modalStyle ] }>
@@ -68,7 +68,7 @@ class Modal extends Component {
                   color="#FFFFFF"
                   icon="times"
                   hideShadow={ true }
-                  onPress={ hide }
+                  onClick={ hide }
                 />
               </View>
               { React.createElement(content, this.props) }

@@ -7,10 +7,6 @@ import ExtendedStyleSheet from 'react-native-extended-stylesheet';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import ImageIconOcean from '../../resources/images/icon_ocean.png';
-import ImageIconOxygen from '../../resources/images/icon_oxygen.png';
-import ImageIconTemperature from '../../resources/images/icon_temperature.png';
-
 import Button from '../components/Button';
 
 import { runProject } from '../store/game/gameActions';
@@ -21,6 +17,10 @@ import { MODAL_TYPES } from '../store/ui/uiConstants';
 
 import ProjectButton from './ProjectButton';
 import Tracker from './Tracker';
+
+const ImageIconOcean = 'images/icon_ocean.png';
+const ImageIconOxygen = 'images/icon_oxygen.png';
+const ImageIconTemperature = 'images/icon_temperature.png';
 
 const StyledTracker = (props) => {
   const { type } = props;
@@ -51,7 +51,7 @@ class Interface extends Component {
       null,
       [
         { text: 'No', style: 'cancel' },
-        { text: 'Yes', onPress: () => this.props.actions.startGame(new GameState()) }
+        { text: 'Yes', onClick: () => this.props.actions.startGame(new GameState()) }
       ],
       'default'
     );
@@ -111,50 +111,50 @@ class Interface extends Component {
                 style={ styles.button }
                 icon="undo-alt"
                 isDisabled={ isUndoDisabled }
-                onPress={ undo }
+                onClick={ undo }
               />
               <Button
                 style={ styles.button }
                 icon="redo-alt"
                 isDisabled={ isRedoDisabled }
-                onPress={ redo }
+                onClick={ redo }
               />
             </View>
             <View style={ styles.sidebarButtonRow }>
               <Button
                 style={ styles.button }
                 icon="info-circle"
-                onPress={ () => showModal(MODAL_TYPES.INFO) }
+                onClick={ () => showModal(MODAL_TYPES.INFO) }
               />
               <Button
                 style={ styles.button }
                 icon="file"
-                onPress={ this.onNewGame }
+                onClick={ this.onNewGame }
               />
             </View>
             <View style={ styles.flex } />
             <View style={ styles.sidebarToggleRow }>
               <View style={ styles.sidebarToggleColumn }>
-                <TouchableOpacity onPress={ this.onOcean } disabled={ capOceans }>
+                <TouchableOpacity onClick={ this.onOcean } disabled={ capOceans }>
                   <Image style={ styles.toggleOcean } source={ ImageIconOcean } />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={ this.onOcean } disabled={ capOceans }>
+                <TouchableOpacity onClick={ this.onOcean } disabled={ capOceans }>
                   <Text style={ oceanTextStyle }>{ oceans }</Text>
                 </TouchableOpacity>
               </View>
               <View style={ styles.sidebarToggleColumn }>
-                <TouchableOpacity onPress={ this.onTemperature } disabled={ capTemperature }>
+                <TouchableOpacity onClick={ this.onTemperature } disabled={ capTemperature }>
                   <Text style={ temperatureTextStyle }>{ temperatureText }</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={ this.onTemperature } disabled={ capTemperature }>
+                <TouchableOpacity onClick={ this.onTemperature } disabled={ capTemperature }>
                   <Image style={ styles.toggleTemperature } source={ ImageIconTemperature } />
                 </TouchableOpacity>
               </View>
               <View style={ styles.sidebarToggleColumn }>
-                <TouchableOpacity onPress={ this.onOxygen } disabled={ capOxygen }>
+                <TouchableOpacity onClick={ this.onOxygen } disabled={ capOxygen }>
                   <Image style={ styles.toggleOxygen } source={ ImageIconOxygen } />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={ this.onOxygen } disabled={ capOxygen }>
+                <TouchableOpacity onClick={ this.onOxygen } disabled={ capOxygen }>
                   <Text style={ oxygenTextStyle }>{ oxygenText }</Text>
                 </TouchableOpacity>
               </View>
@@ -191,7 +191,7 @@ class Interface extends Component {
             <Button
               style={ styles.button }
               text="Projects"
-              onPress={ () => showModal(MODAL_TYPES.PROJECTS) }
+              onClick={ () => showModal(MODAL_TYPES.PROJECTS) }
             />
           </View>
         </View>

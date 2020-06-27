@@ -72,7 +72,8 @@ export default (state = initialState, action) => {
         .set('future', List(future))
         .set('history', List(history));
     }
-  }
 
-  return state;
+    default:
+      return state;
+  }
 }

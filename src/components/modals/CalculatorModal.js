@@ -198,7 +198,7 @@ class CalculatorModal extends Component {
         style={ styles.actionButton }
         backgroundColor={ backgroundColor }
         isDisabled={ isDisabled }
-        onPress={ this.onChange }
+        onClick={ this.onChange }
       >
         <View style={ styles.actionButtonRow }>
           <Text style={ styles.actionText }>New Total:</Text>
@@ -279,7 +279,7 @@ class CalculatorModal extends Component {
           style={ styles.button }
           backgroundColor={ backgroundColor }
           color="#222222"
-          onPress={ () => this.onKeyPad(value) }
+          onClick={ () => this.onKeyPad(value) }
         >
           <View style={ styles.keyPadPlusMinus }>
             <Text style={ styles.keyPadPlusMinusText }>+</Text>
@@ -301,20 +301,20 @@ class CalculatorModal extends Component {
           color="#222222"
           text={ text }
           textStyle={ textStyle }
-          onPress={ () => this.onKeyPad(value) }
+          onClick={ () => this.onKeyPad(value) }
         />
       );
     }
   };
 
-  renderResourceButton = (type, icon, onPress, isDisabled) => {
+  renderResourceButton = (type, icon, onClick, isDisabled) => {
     const { type: calculatorType } = this.props;
 
     const style = isDisabled ? styles.resourceDisabled : null;
     const colorStyle = { color: RESOURCE_INFOS[calculatorType].color };
 
     return (
-      <TouchableOpacity style={ style } disabled={ isDisabled } onPress={ onPress }>
+      <TouchableOpacity style={ style } disabled={ isDisabled } onClick={ onClick }>
         <FontAwesome5 style={ [ styles.resourceButton, colorStyle ] } name={ icon } />
       </TouchableOpacity>
     );
@@ -350,7 +350,7 @@ class CalculatorModal extends Component {
       <TouchableOpacity
         key={ type }
         style={ styles.toggleButton }
-        onPress={ () => this.onToggle(type) }
+        onClick={ () => this.onToggle(type) }
       >
         <ImageBackground
           style={ styles.toggleButtonResourceImage }

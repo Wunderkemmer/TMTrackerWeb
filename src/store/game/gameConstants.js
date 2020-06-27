@@ -1,16 +1,16 @@
-const ImageIconCard = 'resources/images/icon_card.png';
-const ImageIconCity = 'resources/images/icon_city.png';
-const ImageIconEnergy = 'resources/images/icon_energy.png';
-const ImageIconGreenery = 'resources/images/icon_greenery.png';
-const ImageIconHeat = 'resources/images/icon_heat.png';
-const ImageIconMegacredits = 'resources/images/icon_mega_credits.png';
-const ImageIconOcean = 'resources/images/icon_ocean.png';
-const ImageIconOxygen = 'resources/images/icon_oxygen.png';
-const ImageIconPlants = 'resources/images/icon_plants.png';
-const ImageIconSteel = 'resources/images/icon_steel.png';
-const ImageIconTemperature = 'resources/images/icon_temperature.png';
-const ImageIconTerraformingRating = 'resources/images/icon_terraforming_rating.png';
-const ImageIconTitanium = 'resources/images/icon_titanium.png';
+const ImageIconCard = 'images/icon_card.png';
+const ImageIconCity = 'images/icon_city.png';
+const ImageIconEnergy = 'images/icon_energy.png';
+const ImageIconGreenery = 'images/icon_greenery.png';
+const ImageIconHeat = 'images/icon_heat.png';
+const ImageIconMegacredits = 'images/icon_mega_credits.png';
+const ImageIconOcean = 'images/icon_ocean.png';
+const ImageIconOxygen = 'images/icon_oxygen.png';
+const ImageIconPlants = 'images/icon_plants.png';
+const ImageIconSteel = 'images/icon_steel.png';
+const ImageIconTemperature = 'images/icon_temperature.png';
+const ImageIconTerraformingRating = 'images/icon_terraforming_rating.png';
+const ImageIconTitanium = 'images/icon_titanium.png';
 
 export const PROJECT_TYPES = {
   ADD_OCEAN: 'addOcean',

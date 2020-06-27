@@ -17,7 +17,6 @@ class Button extends Component {
     hasShadow: true,
     iconColor: '#ffffff',
     iconSize: '1.3rem',
-    padding: '0.5rem 1rem',
     textAlign: 'center',
     textColor: '#ffffff'
   };
@@ -88,36 +87,37 @@ class Button extends Component {
       children,
       classes,
       className,
+      contentClass,
       icon,
       iconClass,
       text,
       textClass,
     } = this.props;
 
-    let buttonStyle = this.state.isPressed ? classes.buttonPressed : classes.button;
+    let buttonClass = this.state.isPressed ? classes.buttonPressed : classes.button;
 
     if (className) {
-      buttonStyle = `${ buttonStyle } ${ className }`;
+      buttonClass = `${ buttonClass } ${ className }`;
     }
 
-    const iconStyle = iconClass ? `${ classes.icon } ${ iconClass }` : classes.icon;
-    const textStyle = textClass ? `${ classes.text } ${ textClass }` : classes.text;
+    const fullIconClass = iconClass ? `${ classes.icon } ${ iconClass }` : classes.icon;
+    const fullTextClass = textClass ? `${ classes.text } ${ textClass }` : classes.text;
 
     return (
       <div
-        className={ buttonStyle }
+        className={ buttonClass }
         onPointerDown={ this.onDown }
         onPointerOut={ this.onOut }
         onPointerOver={ this.onOver }
         onPointerUp={ this.onUp }
         ref={ (ref) => this.buttonRef = ref }
       >
-        <div className={ classes.content }>
+        <div className={ `${ classes.content } ${ contentClass }` }>
           <If condition={ icon }>
-            <Icon className={ iconStyle } icon={ icon } />
+            <Icon className={ fullIconClass } icon={ icon } />
           </If>
           <If condition={ text }>
-            <div className={ textStyle }>{ text }</div>
+            <div className={ fullTextClass }>{ text }</div>
           </If>
           { children }
         </div>
@@ -134,7 +134,8 @@ const styles = {
     border: (props) => props.border,
     borderRadius: (props) => props.borderRadius,
     boxShadow: (props) => props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,
-    padding: (props) => props.padding,
+    padding: (props) => props.padding === undefined && (props.text || props.icon) ? '0.5rem 1rem' : props.padding,
+    display: 'flex'
   },
 
   buttonPressed: {
@@ -142,12 +143,14 @@ const styles = {
     border: (props) => props.border,
     borderRadius: (props) => props.borderRadius,
     boxShadow: (props) => props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,
-    padding: (props) => props.padding,
-    opacity: 0.5
+    padding: (props) => props.padding === undefined && (props.text || props.icon) ? '0.5rem 1rem' : props.padding,
+    opacity: 0.5,
+    display: 'flex'
   },
 
   content: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
@@ -157,7 +160,7 @@ const styles = {
     color: (props) => props.iconColor,
     fontSize: (props) => props.iconSize,
     opacity: (props) => props.isDisabled ? 0.5 : 1,
-    marginRight: (props) => `calc(${ props.iconSize } * 0.25)`,
+    marginRight: (props) => props.text ? `calc(${ props.iconSize } * 0.25)` : '0.05rem',
     pointerEvents: 'none'
   },
 

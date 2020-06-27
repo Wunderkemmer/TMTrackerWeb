@@ -17,7 +17,7 @@ export default function gameMiddleware (store) {
 
         store.dispatch(setGameState(future.get(0).gameState));
 
-        break;
+        return next(action);
       }
 
       case UI_SET_HISTORY: {
@@ -25,7 +25,7 @@ export default function gameMiddleware (store) {
 
         store.dispatch(setGameState(history[history.length - 1].gameState));
 
-        break;
+        return next(action);
       }
 
       case UI_START_GAME: {
@@ -33,7 +33,7 @@ export default function gameMiddleware (store) {
 
         store.dispatch(setGameState(gameState));
 
-        break;
+        return next(action);
       }
 
       case UI_UNDO: {
@@ -41,10 +41,11 @@ export default function gameMiddleware (store) {
 
         store.dispatch(setGameState(history.get(history.size - 2).gameState));
 
-        break;
+        return next(action);
       }
-    }
 
-    return next(action);
+      default:
+        return next(action);
+    }
   };
 }

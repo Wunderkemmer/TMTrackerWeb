@@ -13,22 +13,6 @@ import { MODAL_TYPES } from 'store/ui/uiConstants';
 
 import Button from 'components/Button';
 
-
-const BottomButton = (props) => {
-  const { icon, onPress, useDebounce } = props;
-
-  return (
-    <Button
-      style={ styles.button }
-      backgroundColor="#FFFFFF"
-      color="#222222"
-      icon={ icon }
-      onPress={ onPress }
-      useDebounce={ useDebounce }
-    />
-  );
-};
-
 class Tracker extends Component {
 
   static defaultOpts = {
@@ -86,59 +70,65 @@ class Tracker extends Component {
   };
 
   render () {
-    const { count, production, style, type } = this.props;
+    const { classes, className, count, production, type } = this.props;
 
     const {
       color,
       button1Icon,
       button2Icon,
       image,
-      showTitle,
+      hideTitleInTracker,
       title,
       useDebounce,
       useSmallTracker
     } = RESOURCE_INFOS[type];
 
-    const colorStyle = useSmallTracker ? { color } : null;
-    const countTextStyle = useSmallTracker ? styles.countTextSmall : styles.countTextLarge;
-    const headerTextStyle = useSmallTracker ? styles.headerTextSmall : styles.headerTextLarge;
+    const headerTextClass = useSmallTracker ? classes.headerTextSmall : classes.headerTextLarge;
+    let countTextStyle = useSmallTracker ? styles.countTextSmall : styles.countTextLarge;
+
+    if (useSmallTracker) {
+      countTextStyle = Object.assign(countTextStyle, { color });
+    }
 
     return (
       <Button
-        style={ style }
+        className={ `${ classes.frame } ${ className }` }
+        contentClass={ classes.content }
         backgroundColor={ color }
-        onPress={ this.onTracker }
+        onClick={ this.onTracker }
       >
-        <div style={ styles.header }>
+        <div className={ classes.header }>
           <If condition={ image }>
-            <img style={ styles.headerImage } alt='' src={ image } />
+            <img className={ classes.headerImage } alt='' src={ image } />
           </If>
-          <If condition={ showTitle }>
-            <div style={ headerTextStyle }>{ title }</div>
+          <If condition={ !hideTitleInTracker }>
+            <div className={ headerTextClass }>{ title }</div>
           </If>
         </div>
-        <div style={ styles.count }>
-          <div style={ [ countTextStyle, colorStyle ] }>{ count }</div>
+        <div className={ classes.count }>
+          <div style={ countTextStyle }>{ count }</div>
         </div>
-        <Button>
-          <div style={ styles.footer }>
-            <div style={ styles.production }>
-              <BottomButton
-                icon={ button1Icon || 'minus' }
-                onPress={ this.onButton1 }
-                useDebounce={ useDebounce }
-              />
-              <If condition={ production !== undefined }>
-                <div style={ styles.productionText }>{ production }</div>
-              </If>
-              <BottomButton
-                icon={ button2Icon || 'plus' }
-                onPress={ this.onButton2 }
-                useDebounce={ useDebounce }
-              />
-            </div>
-          </div>
-        </Button>
+        <div className={ classes.footer }>
+          <Button
+            className={ classes.productionButton }
+            backgroundColor="#FFFFFF"
+            icon={ button1Icon || 'minus' }
+            iconColor="#222222"
+            onClick={ this.onButton1 }
+            useDebounce={ useDebounce }
+          />
+          <If condition={ production !== undefined }>
+            <div className={ classes.productionText }>{ production }</div>
+          </If>
+          <Button
+            className={ classes.productionButton }
+            backgroundColor="#FFFFFF"
+            icon={ button2Icon || 'plus' }
+            iconColor="#222222"
+            onClick={ this.onButton2 }
+            useDebounce={ useDebounce }
+          />
+        </div>
       </Button>
     );
   }
@@ -147,15 +137,16 @@ class Tracker extends Component {
 
 const styles = {
 
-  button: {
-    borderRadius: '0.5rem',
-    maxWidth: '2.3rem',
-    height: '2.3rem',
-    margin: '0.1rem'
+  content: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch'
   },
 
   count: {
     backgroundColor: '#FFFFFF',
+    display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
@@ -171,38 +162,39 @@ const styles = {
       height: 1.5
     },
     shadowRadius: 1,
-    shadowOpacity: 0.4,
-    marginTop: '-1.1rem',
-    marginBottom: '-1rem'
+    shadowOpacity: 0.4
   },
 
   countTextSmall: {
     fontSize: '3rem',
     textAlign: 'center',
-    color: '#333333',
-    marginTop: '-1.05rem',
-    marginBottom: '-1rem'
+    color: '#333333'
+  },
+
+  frame: {
+    display: 'flex',
+    flex: 1
   },
 
   footer: {
     borderBottomRightRadius: '0.7rem',
     borderBottomLeftRadius: '0.7rem',
-    paddingHorizontal: '0.1rem',
-    paddingTop: '0.35rem',
-    paddingBottom: '0.3rem'
+    padding: '0.4rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
     borderTopRightRadius: '0.7rem',
     borderTopLeftRadius: '0.7rem',
-    height: '2.5rem',
-    paddingHorizontal: '0.45rem'
+    padding: '0.45rem',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
 
   headerImage: {
-    flex: 1,
     height: '1.6rem',
     marginRight: '0.4rem'
   },
@@ -218,15 +210,13 @@ const styles = {
     flex: 1,
     fontSize: '0.9rem',
     fontWeight: 'bold',
-    textAlign: 'center',
     color: '#FFFFFF'
   },
 
-  production: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: '0.2rem'
+  productionButton: {
+    width: '2.3rem',
+    height: '2.3rem',
+    padding: 0
   },
 
   productionText: {
