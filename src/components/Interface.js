@@ -42,6 +42,9 @@ class Interface extends Component {
   render () {
     const {
       actions: { redo, showModal, undo },
+      capOceans,
+      capOxygen,
+      capTemperature,
       classes,
       isRedoDisabled,
       isUndoDisabled,
@@ -50,21 +53,17 @@ class Interface extends Component {
       temperature
     } = this.props;
 
-    const capOceans = oceans >= RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount;
-    const capOxygen = oxygen >= RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount;
-    const capTemperature = temperature >= RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount;
-
     const oceanTextClass = capOceans ?
-      classes.toggleBottomTextComplete :
-      classes.toggleBottomText;
+      classes.statusBottomTextComplete :
+      classes.statusBottomText;
 
     const oxygenTextClass = capOxygen ?
-      classes.toggleBottomTextComplete :
-      classes.toggleBottomText;
+      classes.statusBottomTextComplete :
+      classes.statusBottomText;
 
     const temperatureTextClass = capTemperature ?
-      classes.toggleTopTextComplete :
-      classes.toggleTopText;
+      classes.statusTopTextComplete :
+      classes.statusTopText;
 
     const oxygenText = oxygen + '%';
     const temperatureText = (temperature > 0 ? '+' + temperature : temperature) + '°';
@@ -102,35 +101,32 @@ class Interface extends Component {
             </div>
           </div>
           <div className={ classes.flex } />
-          <div className={ classes.toggleButtons }>
+          <div className={ classes.statusButtons }>
             <Button
-              className={ classes.toggleButton }
-              contentClass={ classes.toggleContent }
+              contentClass={ classes.statusContent }
               isDisabled={ capOceans }
               isBackgroundVisible={ false }
               onClick={ this.onOcean }
             >
-              <img className={ classes.toggleOcean } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].image } />
+              <img className={ classes.statusOcean } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].image } />
               <div className={ oceanTextClass }>{ oceans }</div>
             </Button>
             <Button
-              className={ classes.toggleButton }
-              contentClass={ classes.toggleContent }
+              contentClass={ classes.statusContent }
               isDisabled={ capTemperature }
               isBackgroundVisible={ false }
               onClick={ this.onTemperature }
             >
               <div className={ temperatureTextClass }>{ temperatureText }</div>
-              <img className={ classes.toggleTemperature } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].image } />
+              <img className={ classes.statusTemperature } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].image } />
             </Button>
             <Button
-              className={ classes.toggleButton }
-              contentClass={ classes.toggleContent }
+              contentClass={ classes.statusContent }
               isDisabled={ capOxygen }
               isBackgroundVisible={ false }
               onClick={ this.onOxygen }
             >
-              <img className={ classes.toggleOxygen } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].image } />
+              <img className={ classes.statusOxygen } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].image } />
               <div className={ oxygenTextClass }>{ oxygenText }</div>
             </Button>
           </div>
@@ -246,38 +242,34 @@ const styles = {
     flex: 1
   },
 
-  toggleButton: {
-    // margin: '0.25rem'
-  },
-
-  toggleButtons: {
+  statusButtons: {
     display: 'flex',
     justifyContent: 'center',
     margin: '0.25rem'
   },
 
-  toggleContent: {
+  statusContent: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
   },
 
-  toggleOcean: {
+  statusOcean: {
     height: '3rem',
     marginTop: '1rem'
   },
 
-  toggleOxygen: {
+  statusOxygen: {
     height: '3rem',
     marginTop: '1rem'
   },
 
-  toggleTemperature: {
+  statusTemperature: {
     height: '3.5rem',
     marginTop: '0.4rem'
   },
 
-  toggleTopText: {
+  statusTopText: {
     fontSize: '1rem',
     fontWeight: 'bold',
     textAlign: 'center',
@@ -285,7 +277,7 @@ const styles = {
     marginHorizontal: '-1rem'
   },
 
-  toggleTopTextComplete: {
+  statusTopTextComplete: {
     fontSize: '1rem',
     fontWeight: 'bold',
     textAlign: 'center',
@@ -293,7 +285,7 @@ const styles = {
     marginHorizontal: '-1rem'
   },
 
-  toggleBottomText: {
+  statusBottomText: {
     fontSize: '1rem',
     fontWeight: 'bold',
     textAlign: 'center',
@@ -301,7 +293,7 @@ const styles = {
     marginTop: '0.4rem'
   },
 
-  toggleBottomTextComplete: {
+  statusBottomTextComplete: {
     fontSize: '1rem',
     fontWeight: 'bold',
     textAlign: 'center',
@@ -320,7 +312,10 @@ const mapStateToProps = (state) => {
     isUndoDisabled: history.size < 2,
     oceans,
     oxygen,
-    temperature
+    temperature,
+    capOceans: oceans >= RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount,
+    capOxygen: oxygen >= RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount,
+    capTemperature: temperature >= RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount
   };
 };
 

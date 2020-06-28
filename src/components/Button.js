@@ -138,7 +138,7 @@ const styles = {
     borderRadius: (props) => props.isBackgroundVisible ? props.borderRadius : null,
     boxShadow: (props) => props.isBackgroundVisible && props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,
     padding: (props) => props.padding === undefined && (props.text || props.icon) ? '0.5rem 1rem' : props.padding,
-    opacity: (props) => props.isDisabled ? 0.5 : 1,
+    opacity: (props) => props.isBackgroundVisible && props.isDisabled ? 0.5 : 1,
     display: 'flex'
   },
 
@@ -155,7 +155,6 @@ const styles = {
   buttonContent: {
     display: 'flex',
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -163,18 +162,14 @@ const styles = {
   icon: {
     color: (props) => props.iconColor,
     fontSize: (props) => props.iconSize,
-    opacity: (props) => props.isDisabled ? 0.5 : 1,
-    marginRight: (props) => props.text ? `calc(${ props.iconSize } * 0.25)` : '0.05rem',
-    pointerEvents: 'none'
+    marginRight: (props) => props.text ? `calc(${ props.iconSize } * 0.25)` : '0.05rem'
   },
 
   text: {
     color: (props) => props.textColor,
     fontSize: (props) => props.fontSize,
     fontWeight: (props) => props.fontWeight,
-    textAlign: (props) => props.textAlign,
-    opacity: (props) => props.isDisabled ? 0.5 : 1,
-    pointerEvents: 'none'
+    textAlign: (props) => props.textAlign
   }
 
 };
