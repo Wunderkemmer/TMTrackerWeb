@@ -112,9 +112,10 @@ const styles = {
   },
 
   time: {
+    color: '#999999',
     fontSize: '0.75rem',
     fontWeight: 'bold',
-    color: '#999999'
+    paddingBottom: '0.4rem'
   }
 
 };

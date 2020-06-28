@@ -12,7 +12,7 @@ class ProjectsModal extends Component {
 
   static publicStyles = {
     popup: {
-      maxHeight: '24rem'
+      height: 'auto'
     }
   };
 

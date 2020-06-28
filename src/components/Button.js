@@ -130,16 +130,17 @@ class Button extends Component {
 const styles = {
 
   button: {
-    backgroundColor: (props) => props.isDisabled ? '#cccccc' : props.backgroundColor,
+    backgroundColor: (props) => props.backgroundColor,
     border: (props) => props.border,
     borderRadius: (props) => props.borderRadius,
     boxShadow: (props) => props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,
     padding: (props) => props.padding === undefined && (props.text || props.icon) ? '0.5rem 1rem' : props.padding,
+    opacity: (props) => props.isDisabled ? 0.5 : 1,
     display: 'flex'
   },
 
   buttonPressed: {
-    backgroundColor: (props) => props.isDisabled ? '#cccccc' : props.backgroundColor,
+    backgroundColor: (props) => props.backgroundColor,
     border: (props) => props.border,
     borderRadius: (props) => props.borderRadius,
     boxShadow: (props) => props.hasShadow ? `0px 2px 2px rgba(0, 0, 0, 0.4)` : null,

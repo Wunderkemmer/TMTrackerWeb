@@ -94,8 +94,8 @@ const styles = {
 
   modal: {
     backgroundColor: '#FFFFFF',
-    minWidth: '50%',
-    height: '95%',
+    minWidth: '30rem',
+    height: '80%',
     border: '0.2rem solid #222222',
     borderRadius: '1rem',
     margin: '0.2rem',
@@ -139,7 +139,7 @@ const styles = {
   modalHeaderText: {
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    color: '#222222',
+    color: (props) => props.type ? '#222222' : '#FFFFFF',
     margin: '0.2rem',
     paddingLeft: '0.35rem'
   },
