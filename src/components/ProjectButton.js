@@ -1,22 +1,17 @@
+import Button from 'components/Button';
+import If from 'components/If';
+import Ingredient from 'components/Ingredient';
+
+import { getTransactionData } from 'lib/utils';
+
 import React, { Component } from 'react';
-
-import { Text, View } from 'react-native';
-
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import withStyles from 'react-jss';
+import { Icon } from 'react-onsenui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getTransactionData } from '../lib/utils';
-
-import { runProject } from '../store/game/gameActions';
-import { PROJECT_INFOS } from '../store/game/gameConstants';
-
-import Button from './Button';
-import If from './If';
-
-import Ingredient from './Ingredient';
+import { runProject } from 'store/game/gameActions';
+import { PROJECT_INFOS } from 'store/game/gameConstants';
 
 class ProjectButton extends Component {
 
@@ -31,12 +26,13 @@ class ProjectButton extends Component {
   render () {
     const {
       backgroundColor,
-      eventStyle,
+      classes,
+      className,
+      eventClass,
       projectType,
       resourceCounts,
       resourceProductions,
-      showEvent,
-      style
+      showEvent
     } = this.props;
 
     const {
@@ -51,27 +47,31 @@ class ProjectButton extends Component {
 
     return (
       <Button
-        style={ style }
+        className={ className ? `${ classes.button } ${ className }` : classes.button }
         backgroundColor={ backgroundColor }
         isDisabled={ isDisabled }
         onClick={ this.onClick }
         useDebounce={ true }
       >
         <If condition={ showEvent }>
-          <Text style={ [ styles.event, eventStyle ] }>{ event }</Text>
+          <div className={ eventClass ? `${ classes.event }, ${ eventClass }` : classes.event }>{ event }</div>
         </If>
-        <View style={ styles.row }>
+        <div className={ classes.row } >
           { costs.map((cost, index) => <Ingredient key={ index } ingredient={ cost }/>) }
-          <FontAwesome5 style={ styles.icon } name="arrow-right" />
+          <Icon className={ classes.icon } icon="arrow-right" />
           { results.map((result, index) => <Ingredient key={ index } ingredient={ result }/>) }
-        </View>
+        </div>
       </Button>
     );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
+
+  button: {
+    padding: '0.5rem'
+  },
 
   event: {
     fontSize: '0.9rem',
@@ -85,7 +85,7 @@ const styles = ExtendedStyleSheet.create({
   icon: {
     fontSize: '1.4rem',
     color: '#FFFFFF',
-    marginHorizontal: '0.3rem'
+    margin: '0 0.3rem'
   },
 
   image: {
@@ -104,19 +104,21 @@ const styles = ExtendedStyleSheet.create({
     backgroundColor: '#B37D43',
     borderColor: '#222222',
     borderWidth: 1,
-    marginHorizontal: '0.2rem',
+    margin: '0 0.2rem',
     padding: '0.2rem'
   },
 
   resource: {
-    marginHorizontal: '0.2rem'
+    margin: '0 0.2rem'
   },
 
   row: {
+    padding: '0 0.4rem',
+    display: 'flex',
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: '0.4rem'
+    justifyContent: 'space-between'
   },
 
   value: {
@@ -129,7 +131,7 @@ const styles = ExtendedStyleSheet.create({
     textShadowRadius: 2.5
   }
 
-});
+};
 
 const mapStateToProps = (state) => {
   const { resourceCounts, resourceProductions } = state.game;
@@ -146,4 +148,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectButton);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectButton));

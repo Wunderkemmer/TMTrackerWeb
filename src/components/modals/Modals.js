@@ -1,52 +1,35 @@
 import React, { Component } from 'react';
 
-import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
-
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { RESOURCE_INFOS } from '../../store/game/gameConstants';
-import { hideModal } from '../../store/ui/uiActions';
+import { RESOURCE_INFOS } from 'store/game/gameConstants';
+import { hideModal } from 'store/ui/uiActions';
 
-import Button from '../Button';
+import Button from 'components/Button';
 
 class Modal extends Component {
 
   renderImage = () => {
-    const { type } = this.props;
+    const { classes, type } = this.props;
+    const image = type ? RESOURCE_INFOS[type].image : null;
 
-    if (type) {
-      const { image } = RESOURCE_INFOS[type];
-
-      if (image) {
-        return (
-          <Image style={ styles.headerImage } resizeMode="contain" source={ image } />
-        );
-      }
-    }
-
-    return null;
+    return image ? (
+      <img className={ classes.headerImage } alt='' src={ image } />
+    ) : null;
   };
 
   renderTitle = () => {
-    const { type, title } = this.props;
-
+    const { classes, title, type } = this.props;
     const displayTitle = type ? 'Update ' + RESOURCE_INFOS[type].title : title;
 
-    if (displayTitle) {
-      return (
-        <Text style={ styles.headerText }>{ displayTitle }</Text>
-      );
-    }
-
-    return null;
+    return displayTitle ? (
+      <div className={ classes.headerText }>{ displayTitle }</div>
+    ) : null;
   };
 
   render () {
     const { content, hide, type } = this.props;
-
     const modalStyle = content.publicStyles ? content.publicStyles.popup : null;
     const headerStyle = { backgroundColor: type ? RESOURCE_INFOS[type].color : '#5B8BDD' };
 

@@ -11,7 +11,7 @@ class Button extends Component {
   static defaultProps = {
     backgroundColor: '#5b8bdd',
     border: '0.2rem solid #222222',
-    borderRadius: '0.5rem',
+    borderRadius: '1rem',
     fontSize: '0.9rem',
     fontWeight: 'bold',
     hasShadow: true,
@@ -72,7 +72,7 @@ class Button extends Component {
 
       if (onClick) {
         if (useDebounce) {
-          debounce(onClick, 250, { leading: true, trailing: false });
+          debounce(onClick, 250, { leading: true, trailing: false })();
         } else {
           onClick();
         }

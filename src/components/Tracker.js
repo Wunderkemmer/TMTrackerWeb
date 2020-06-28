@@ -87,7 +87,7 @@ class Tracker extends Component {
     let countTextStyle = useSmallTracker ? styles.countTextSmall : styles.countTextLarge;
 
     if (useSmallTracker) {
-      countTextStyle = Object.assign(countTextStyle, { color });
+      countTextStyle = Object.assign({ ...countTextStyle }, { color });
     }
 
     return (
@@ -172,6 +172,7 @@ const styles = {
   },
 
   frame: {
+    margin: '0.25rem',
     display: 'flex',
     flex: 1
   },
@@ -179,7 +180,7 @@ const styles = {
   footer: {
     borderBottomRightRadius: '0.7rem',
     borderBottomLeftRadius: '0.7rem',
-    padding: '0.4rem',
+    padding: '0.4rem 0.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -188,10 +189,11 @@ const styles = {
   header: {
     borderTopRightRadius: '0.7rem',
     borderTopLeftRadius: '0.7rem',
-    padding: '0.45rem',
+    padding: '0.55rem',
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   headerImage: {
@@ -200,14 +202,13 @@ const styles = {
   },
 
   headerTextLarge: {
-    flex: 4,
+    flex: 1,
     fontSize: '1rem',
     fontWeight: 'bold',
     color: '#222222'
   },
 
   headerTextSmall: {
-    flex: 1,
     fontSize: '0.9rem',
     fontWeight: 'bold',
     color: '#FFFFFF'
@@ -216,7 +217,8 @@ const styles = {
   productionButton: {
     width: '2.3rem',
     height: '2.3rem',
-    padding: 0
+    borderRadius: '0.75rem',
+    padding: 0,
   },
 
   productionText: {

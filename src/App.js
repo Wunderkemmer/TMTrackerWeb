@@ -1,5 +1,5 @@
 import If from 'components/If';
-import Tracker from 'components/Tracker';
+import Interface from 'components/Interface';
 
 import onsenui, { notification } from 'onsenui';
 import 'onsenui/css/onsen-css-components.css';
@@ -10,17 +10,18 @@ import withStyles from 'react-jss';
 import { Provider } from 'react-redux';
 
 import store from 'store';
-
 import { RESOURCE_INFOS, RESOURCE_TYPES } from 'store/game/gameConstants';
 import GameState from 'store/game/gameState';
-import { setHistory, startGame } from 'store/ui/uiActions';
+import {setHistory, startGame} from 'store/ui/uiActions';
+
+const ImageBackgroundMars = 'images/background_mars.jpg';
 
 onsenui.disableAutoStyling();
 
 // window.oncontextmenu = function(event) {
-//   event.preventDefault();
-//   event.stopPropagation();
 //
+// event.preventDefault();
+// event.stopPropagation();
 //   return false;
 // };
 
@@ -38,10 +39,12 @@ class App extends Component<Props> {
     if (history) {
       history = JSON.parse(history);
 
-      const { event, gameState } = history[history.length - 1];
-      const { oceans, oxygen, temperature } = gameState.resourceCounts;
+      const {
+        gameState: { oceans, oxygen, temperature },
+        transaction: { event }
+      } = history[history.length - 1];
 
-      const isGameInProgress = event !== 'newGame' &&
+      const isGameInProgress = event !== 'New Game' &&
         (oceans < RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount ||
          oxygen < RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount ||
          temperature < RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount);
@@ -79,17 +82,9 @@ class App extends Component<Props> {
     return (
       <Provider store={ store }>
         <div className={ classes.app }>
+          <img className={ classes.background } alt='' src={ ImageBackgroundMars } />
           <If condition={ !isLoading }>
-            <div className={ classes.resourceRow }>
-              <Tracker type={ RESOURCE_TYPES.MEGACREDITS } />
-              <Tracker type={ RESOURCE_TYPES.STEEL } />
-              <Tracker type={ RESOURCE_TYPES.TITANIUM } />
-            </div>
-            <div className={ classes.resourceRow }>
-              <Tracker type={ RESOURCE_TYPES.PLANTS } />
-              <Tracker type={ RESOURCE_TYPES.ENERGY } />
-              <Tracker type={ RESOURCE_TYPES.HEAT } />
-            </div>
+            <Interface />
           </If>
         </div>
       </Provider>
@@ -102,18 +97,16 @@ const styles = {
 
   app: {
     backgroundColor: '#282c34',
-    color: 'white',
-    fontSize: 'calc(10px + 2vmin)',
-    textAlign: 'center',
     minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column'
+    display: 'flex'
   },
 
-  resourceRow: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'row'
+  background: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    zIndex: 0
   }
 
 };

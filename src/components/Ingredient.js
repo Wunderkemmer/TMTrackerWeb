@@ -1,17 +1,16 @@
+import If from "components/If";
+
 import React, { Component } from 'react';
+import withStyles from "react-jss";
 
-import { Image, ImageBackground, Text, View } from 'react-native';
-
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-
-import { RESOURCE_INFOS } from '../store/game/gameConstants';
+import { RESOURCE_INFOS } from 'store/game/gameConstants';
 
 const { abs } = Math;
 
-export default class Ingredient extends Component {
+class Ingredient extends Component {
 
   render () {
-    const { ingredient, isVerbose } = this.props;
+    const { classes, ingredient, isVerbose } = this.props;
     const { image, isProduction, type, value } = ingredient;
     const resourceInfo = RESOURCE_INFOS[type];
     const isHidden = resourceInfo.hideIngredient && !isVerbose;
@@ -20,67 +19,67 @@ export default class Ingredient extends Component {
       return null;
     }
 
-    const frameStyle = isProduction ? styles.frameProduction : styles.frame;
-    const imageStyle = isProduction ? styles.imageProduction : styles.image;
+    const frameClass = isProduction ? classes.frameProduction : classes.frame;
+    const imageClass = isProduction ? classes.imageProduction : classes.image;
     const absValue = resourceInfo.hideValue ? 0 : abs(value);
     const displayValue = absValue > 1 ? absValue : null;
 
-    if (displayValue) {
-      return (
-        <View style={ frameStyle }>
-          <ImageBackground style={ imageStyle } resizeMode="contain" source={ image }>
-            <Text style={ styles.value }>{ displayValue }</Text>
-          </ImageBackground>
-        </View>
-      );
-    }
-
     return (
-      <View style={ frameStyle }>
-        <Image style={ imageStyle } resizeMode="contain" source={ image } />
-      </View>
+      <div className={ frameClass }>
+        <img className={ imageClass } alt='' src={ image } />
+        <If condition={ displayValue }>
+          <div className={ classes.value }>{ displayValue }</div>
+        </If>
+      </div>
     );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
 
   image: {
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '1.8rem',
     height: '1.8rem'
   },
 
   imageProduction: {
     width: '1.3rem',
-    height: '1.3rem',
+    height: '1.3rem'
   },
 
   frame: {
-    margin: '0.2rem'
+    width: '1.8rem',
+    height: '1.8rem',
+    margin: '0.2rem',
+    position: 'relative'
   },
 
   frameProduction: {
     backgroundColor: '#B37D43',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#222222',
-    borderWidth: 1,
     width: '1.8rem',
     height: '1.8rem',
-    margin: '0.2rem'
+    borderColor: '#222222',
+    borderWidth: 1,
+    margin: '0.2rem',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   value: {
+    color: '#FFFFFF',
     fontSize: '1rem',
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#FFFFFF',
-    textShadowColor: '#000000',
-    textShadowOffset: { height: 0.1 },
-    textShadowRadius: 2.5
+    textShadow: '0rem 0rem 0.2rem #000000',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
   }
 
-});
+};
+
+export default withStyles(styles)(Ingredient)
