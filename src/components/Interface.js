@@ -17,10 +17,6 @@ import GameState from 'store/game/gameState';
 import { redo, showModal, startGame, undo } from 'store/ui/uiActions';
 import { MODAL_TYPES } from 'store/ui/uiConstants';
 
-// const ImageIconOcean = 'images/icon_ocean.png';
-// const ImageIconOxygen = 'images/icon_oxygen.png';
-// const ImageIconTemperature = 'images/icon_temperature.png';
-
 class Interface extends Component {
 
   onNewGame = () => {
@@ -49,29 +45,29 @@ class Interface extends Component {
       classes,
       isRedoDisabled,
       isUndoDisabled,
-      // oceans,
-      // oxygen,
-      // temperature
+      oceans,
+      oxygen,
+      temperature
     } = this.props;
 
-    // const capOceans = oceans >= RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount;
-    // const capOxygen = oxygen >= RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount;
-    // const capTemperature = temperature >= RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount;
+    const capOceans = oceans >= RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].maximumCount;
+    const capOxygen = oxygen >= RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].maximumCount;
+    const capTemperature = temperature >= RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].maximumCount;
 
-    // const oceanTextStyle = capOceans ?
-    //   styles.toggleBottomTextComplete :
-    //   styles.toggleBottomText;
-    //
-    // const oxygenTextStyle = capOxygen ?
-    //   styles.toggleBottomTextComplete :
-    //   styles.toggleBottomText;
-    //
-    // const temperatureTextStyle = capTemperature ?
-    //   styles.toggleTopTextComplete :
-    //   styles.toggleTopText;
-    //
-    // const oxygenText = oxygen + '%';
-    // const temperatureText = (temperature > 0 ? '+' + temperature : temperature) + '°';
+    const oceanTextClass = capOceans ?
+      classes.toggleBottomTextComplete :
+      classes.toggleBottomText;
+
+    const oxygenTextClass = capOxygen ?
+      classes.toggleBottomTextComplete :
+      classes.toggleBottomText;
+
+    const temperatureTextClass = capTemperature ?
+      classes.toggleTopTextComplete :
+      classes.toggleTopText;
+
+    const oxygenText = oxygen + '%';
+    const temperatureText = (temperature > 0 ? '+' + temperature : temperature) + '°';
 
     return (
       <div className={ classes.container }>
@@ -105,7 +101,39 @@ class Interface extends Component {
               />
             </div>
           </div>
-
+          <div className={ classes.flex } />
+          <div className={ classes.toggleButtons }>
+            <Button
+              className={ classes.toggleButton }
+              contentClass={ classes.toggleContent }
+              isDisabled={ capOceans }
+              isBackgroundVisible={ false }
+              onClick={ this.onOcean }
+            >
+              <img className={ classes.toggleOcean } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.OCEANS].image } />
+              <div className={ oceanTextClass }>{ oceans }</div>
+            </Button>
+            <Button
+              className={ classes.toggleButton }
+              contentClass={ classes.toggleContent }
+              isDisabled={ capTemperature }
+              isBackgroundVisible={ false }
+              onClick={ this.onTemperature }
+            >
+              <div className={ temperatureTextClass }>{ temperatureText }</div>
+              <img className={ classes.toggleTemperature } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.TEMPERATURE].image } />
+            </Button>
+            <Button
+              className={ classes.toggleButton }
+              contentClass={ classes.toggleContent }
+              isDisabled={ capOxygen }
+              isBackgroundVisible={ false }
+              onClick={ this.onOxygen }
+            >
+              <img className={ classes.toggleOxygen } alt='' src={ RESOURCE_INFOS[RESOURCE_TYPES.OXYGEN].image } />
+              <div className={ oxygenTextClass }>{ oxygenText }</div>
+            </Button>
+          </div>
         </div>
         <div className={ classes.panel2 }>
           <div className={ classes.panel2Row }>
@@ -122,56 +150,25 @@ class Interface extends Component {
         <div className={ classes.panel3 }>
           <Tracker className={ classes.sideTracker } type={ RESOURCE_TYPES.GENERATION } />
           <div className={ classes.panelButtons }>
-            {/*<div style={ styles.panelButtonsRow }>*/}
-              <ProjectButton
-                className={ classes.projectButton }
-                backgroundColor="#5FB365"
-                projectType={ PROJECT_TYPES.TRADE_PLANTS }
-              />
-              <ProjectButton
-                className={ classes.projectButton }
-                backgroundColor="#ED4E44"
-                projectType={ PROJECT_TYPES.TRADE_HEAT }
-              />
-              <Button
-                className={ classes.panelButton }
-                text="Projects"
-                onClick={ () => showModal(MODAL_TYPES.PROJECTS) }
-              />
-            </div>
-          {/*</div>*/}
+            <ProjectButton
+              className={ classes.projectButton }
+              backgroundColor="#5FB365"
+              projectType={ PROJECT_TYPES.TRADE_PLANTS }
+            />
+            <ProjectButton
+              className={ classes.projectButton }
+              backgroundColor="#ED4E44"
+              projectType={ PROJECT_TYPES.TRADE_HEAT }
+            />
+            <Button
+              className={ classes.panelButton }
+              text="Projects"
+              onClick={ () => showModal(MODAL_TYPES.PROJECTS) }
+            />
+          </div>
         </div>
       </div>
     );
-
-    //       <View style={ styles.sidebarButtonsLeft }>
-    //         <View style={ styles.sidebarToggleRow }>
-    //           <View style={ styles.sidebarToggleColumn }>
-    //             <TouchableOpacity onClick={ this.onOcean } disabled={ capOceans }>
-    //               <Image style={ styles.toggleOcean } source={ ImageIconOcean } />
-    //             </TouchableOpacity>
-    //             <TouchableOpacity onClick={ this.onOcean } disabled={ capOceans }>
-    //               <Text style={ oceanTextStyle }>{ oceans }</Text>
-    //             </TouchableOpacity>
-    //           </View>
-    //           <View style={ styles.sidebarToggleColumn }>
-    //             <TouchableOpacity onClick={ this.onTemperature } disabled={ capTemperature }>
-    //               <Text style={ temperatureTextStyle }>{ temperatureText }</Text>
-    //             </TouchableOpacity>
-    //             <TouchableOpacity onClick={ this.onTemperature } disabled={ capTemperature }>
-    //               <Image style={ styles.toggleTemperature } source={ ImageIconTemperature } />
-    //             </TouchableOpacity>
-    //           </View>
-    //           <View style={ styles.sidebarToggleColumn }>
-    //             <TouchableOpacity onClick={ this.onOxygen } disabled={ capOxygen }>
-    //               <Image style={ styles.toggleOxygen } source={ ImageIconOxygen } />
-    //             </TouchableOpacity>
-    //             <TouchableOpacity onClick={ this.onOxygen } disabled={ capOxygen }>
-    //               <Text style={ oxygenTextStyle }>{ oxygenText }</Text>
-    //             </TouchableOpacity>
-    //           </View>
-    //         </View>
-    //       </View>
   }
 
 }
@@ -183,6 +180,10 @@ const styles = {
     width: '100%',
     height: '100%',
     display: 'flex',
+  },
+
+  flex: {
+    flex: 1
   },
 
   panelButton: {
@@ -240,83 +241,75 @@ const styles = {
   },
 
   sideTracker: {
-    minWidth: '7rem',
+    minWidth: '9rem',
     maxHeight: '12rem',
     flex: 1
+  },
+
+  toggleButton: {
+    // margin: '0.25rem'
+  },
+
+  toggleButtons: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '0.25rem'
+  },
+
+  toggleContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+
+  toggleOcean: {
+    height: '3rem',
+    marginTop: '1rem'
+  },
+
+  toggleOxygen: {
+    height: '3rem',
+    marginTop: '1rem'
+  },
+
+  toggleTemperature: {
+    height: '3.5rem',
+    marginTop: '0.4rem'
+  },
+
+  toggleTopText: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#FFFFFF',
+    marginHorizontal: '-1rem'
+  },
+
+  toggleTopTextComplete: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#00FF00',
+    marginHorizontal: '-1rem'
+  },
+
+  toggleBottomText: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#FFFFFF',
+    marginTop: '0.4rem'
+  },
+
+  toggleBottomTextComplete: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#00FF00',
+    marginTop: '0.4rem'
   }
 
 };
-
-//   flex: {
-//     flex: 1
-//   },
-
-//   sidebarToggleColumn: {
-//     alignItems: 'center'
-//   },
-//
-//   sidebarToggleRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     marginTop: '0.2rem',
-//     marginBottom: '0.25rem',
-//     marginHorizontal: '0.35rem'
-//   },
-//
-//   sideTracker: {
-//     flex: 1,
-//     maxHeight: '10rem'
-//   },
-//
-//   toggleOcean: {
-//     width: '2.35rem',
-//     height: '2.35rem',
-//     marginTop: '1rem'
-//   },
-//
-//   toggleOxygen: {
-//     width: '2.35rem',
-//     height: '2.35rem',
-//     marginTop: '1rem'
-//   },
-//
-//   toggleTemperature: {
-//     width: '1.5rem',
-//     height: '3rem',
-//     marginTop: '0.4rem'
-//   },
-//
-//   toggleTopText: {
-//     fontSize: '1rem',
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//     color: '#FFFFFF',
-//     marginHorizontal: '-1rem'
-//   },
-//
-//   toggleTopTextComplete: {
-//     fontSize: '1rem',
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//     color: '#00FF00',
-//     marginHorizontal: '-1rem'
-//   },
-//
-//   toggleBottomText: {
-//     fontSize: '1rem',
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//     color: '#FFFFFF',
-//     marginTop: '0.4rem'
-//   },
-//
-//   toggleBottomTextComplete: {
-//     fontSize: '1rem',
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//     color: '#00FF00',
-//     marginTop: '0.4rem'
-//   }
 
 const mapStateToProps = (state) => {
   const { future, history } = state.ui;
