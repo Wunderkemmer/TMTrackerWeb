@@ -1,9 +1,8 @@
 import If from 'components/If';
-import React, { Component } from 'react';
 
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withStyles from 'react-jss';
-
 import { bindActionCreators } from 'redux';
 
 import { changeCount, changeProduction, nextGeneration } from 'store/game/gameActions';
@@ -84,15 +83,12 @@ class Tracker extends Component {
     } = RESOURCE_INFOS[type];
 
     const headerTextClass = useSmallTracker ? classes.headerTextSmall : classes.headerTextLarge;
-    let countTextStyle = useSmallTracker ? styles.countTextSmall : styles.countTextLarge;
-
-    if (useSmallTracker) {
-      countTextStyle = Object.assign({ ...countTextStyle }, { color });
-    }
+    const countTextClass = useSmallTracker ? classes.countTextSmall : classes.countTextLarge;
+    const countTextStyle = useSmallTracker ? { color } : null;
 
     return (
       <Button
-        className={ `${ classes.frame } ${ className }` }
+        className={ `${ classes.tracker } ${ className }` }
         contentClass={ classes.content }
         backgroundColor={ color }
         onClick={ this.onTracker }
@@ -106,7 +102,7 @@ class Tracker extends Component {
           </If>
         </div>
         <div className={ classes.count }>
-          <div style={ countTextStyle }>{ count }</div>
+          <div className={ countTextClass } style={ countTextStyle }>{ count }</div>
         </div>
         <div className={ classes.footer }>
           <Button
@@ -171,12 +167,6 @@ const styles = {
     color: '#333333'
   },
 
-  frame: {
-    margin: '0.25rem',
-    display: 'flex',
-    flex: 1
-  },
-
   footer: {
     borderBottomRightRadius: '0.7rem',
     borderBottomLeftRadius: '0.7rem',
@@ -225,8 +215,14 @@ const styles = {
     fontSize: '2.5rem',
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#FFFFFF',
-    marginVertical: '-1rem'
+    color: '#FFFFFF'
+  },
+
+  tracker: {
+    minWidth: '10rem',
+    margin: '0.25rem',
+    display: 'flex',
+    flex: 1
   }
 
 };

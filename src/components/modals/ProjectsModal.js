@@ -1,30 +1,27 @@
+import ProjectButton from 'components/ProjectButton';
+
 import React, { Component } from 'react';
-
-import { View } from 'react-native';
-
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-
+import withStyles from 'react-jss';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { runProject } from '../../store/game/gameActions';
-import { PROJECT_TYPES } from '../../store/game/gameConstants';
-
-import ProjectButton from '../ProjectButton';
+import { runProject } from 'store/game/gameActions';
+import { PROJECT_TYPES } from 'store/game/gameConstants';
 
 class ProjectsModal extends Component {
 
-  static publicStyles = ExtendedStyleSheet.create({
+  static publicStyles = {
     popup: {
       maxHeight: '24rem'
     }
-  });
+  };
 
   renderProjectButton = (projectType) => {
+    const { classes } = this.props;
+
     return (
       <ProjectButton
-        style={ styles.button }
-        eventClass={ styles.buttonText }
+        className={ classes.button }
         onClick={ this.props.hide }
         projectType={ projectType }
         showEvent="true"
@@ -33,48 +30,44 @@ class ProjectsModal extends Component {
   };
 
   render () {
+    const { classes } = this.props;
+
     return (
-      <View style={ styles.container }>
-        <View style={ styles.buttonColumn }>
+      <div className={ classes.container }>
+        <div className={ classes.buttonColumn }>
           { this.renderProjectButton(PROJECT_TYPES.SELL_PATENT) }
           { this.renderProjectButton(PROJECT_TYPES.BUY_ASTEROID) }
           { this.renderProjectButton(PROJECT_TYPES.BUY_GREENERY) }
-        </View>
-        <View style={ styles.buttonColumn }>
+        </div>
+        <div className={ classes.buttonColumn }>
           { this.renderProjectButton(PROJECT_TYPES.BUY_POWER_PLANT) }
           { this.renderProjectButton(PROJECT_TYPES.BUY_AQUIFER) }
           { this.renderProjectButton(PROJECT_TYPES.BUY_CITY) }
-        </View>
-      </View>
+        </div>
+      </div>
     );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
 
   button: {
-    flex: 1,
     margin: '0.2rem'
   },
 
   buttonColumn: {
-    flex: 1
-  },
-
-  buttonText: {
-    fontSize: '1rem',
-    color: '#FFFFFF'
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
   },
 
   container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'stretch',
+    display: 'flex',
     padding: '1rem'
   }
 
-});
+};
 
 const mapStateToProps = (state) => {
   const { game } = state;
@@ -90,4 +83,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectsModal);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProjectsModal));

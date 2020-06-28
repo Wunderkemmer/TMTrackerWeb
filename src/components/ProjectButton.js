@@ -29,34 +29,28 @@ class ProjectButton extends Component {
       classes,
       className,
       eventClass,
-      projectType,
-      resourceCounts,
-      resourceProductions,
-      showEvent
+      isDisabled,
+      showEvent,
+      transactionData: {
+        costs,
+        event,
+        results
+      }
     } = this.props;
-
-    const {
-      canAfford,
-      costs,
-      event,
-      isCapped,
-      results
-    } = getTransactionData(PROJECT_INFOS[projectType], resourceCounts, resourceProductions);
-
-    const isDisabled = isCapped || !canAfford;
 
     return (
       <Button
-        className={ className ? `${ classes.button } ${ className }` : classes.button }
+        className={ className }
+        contentClass={ classes.projectContent }
         backgroundColor={ backgroundColor }
         isDisabled={ isDisabled }
         onClick={ this.onClick }
         useDebounce={ true }
       >
         <If condition={ showEvent }>
-          <div className={ eventClass ? `${ classes.event }, ${ eventClass }` : classes.event }>{ event }</div>
+          <div className={ eventClass ? `${ classes.event } ${ eventClass }` : classes.event }>{ event }</div>
         </If>
-        <div className={ classes.row } >
+        <div className={ classes.equation } >
           { costs.map((cost, index) => <Ingredient key={ index } ingredient={ cost }/>) }
           <Icon className={ classes.icon } icon="arrow-right" />
           { results.map((result, index) => <Ingredient key={ index } ingredient={ result }/>) }
@@ -69,76 +63,44 @@ class ProjectButton extends Component {
 
 const styles = {
 
-  button: {
-    padding: '0.5rem'
+  projectContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch'
+  },
+
+  equation: {
+    opacity: (props) => props.isDisabled ? 0.5 : 1,
+    display: 'flex',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: (props) => props.showEvent ? 'center' : 'space-between',
+    padding: '0.25rem'
   },
 
   event: {
+    color: '#FFFFFF',
     fontSize: '0.9rem',
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#FFFFFF',
-    marginTop: '-0.1rem',
-    marginBottom: '0.4rem',
+    marginTop: '0.4rem'
   },
 
   icon: {
     fontSize: '1.4rem',
     color: '#FFFFFF',
     margin: '0 0.3rem'
-  },
-
-  image: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '1.8rem',
-    height: '1.8rem'
-  },
-
-  imageProduction: {
-    width: '1.3rem',
-    height: '1.3rem'
-  },
-
-  production: {
-    backgroundColor: '#B37D43',
-    borderColor: '#222222',
-    borderWidth: 1,
-    margin: '0 0.2rem',
-    padding: '0.2rem'
-  },
-
-  resource: {
-    margin: '0 0.2rem'
-  },
-
-  row: {
-    padding: '0 0.4rem',
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-
-  value: {
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#FFFFFF',
-    textShadowColor: '#000000',
-    textShadowOffset: { height: 0.1 },
-    textShadowRadius: 2.5
   }
 
 };
 
-const mapStateToProps = (state) => {
-  const { resourceCounts, resourceProductions } = state.game;
+const mapStateToProps = ({ game: { resourceCounts, resourceProductions } }, { projectType }) => {
+  const transactionData = getTransactionData(PROJECT_INFOS[projectType], resourceCounts, resourceProductions);
+  const { canAfford, isCapped } = transactionData;
 
   return {
-    resourceCounts,
-    resourceProductions
+    isDisabled: isCapped || !canAfford,
+    transactionData,
   };
 };
 

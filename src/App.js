@@ -1,5 +1,6 @@
 import If from 'components/If';
 import Interface from 'components/Interface';
+import Modals from 'components/modals/Modals';
 
 import onsenui, { notification } from 'onsenui';
 import 'onsenui/css/onsen-css-components.css';
@@ -12,7 +13,7 @@ import { Provider } from 'react-redux';
 import store from 'store';
 import { RESOURCE_INFOS, RESOURCE_TYPES } from 'store/game/gameConstants';
 import GameState from 'store/game/gameState';
-import {setHistory, startGame} from 'store/ui/uiActions';
+import { setHistory, startGame } from 'store/ui/uiActions';
 
 const ImageBackgroundMars = 'images/background_mars.jpg';
 
@@ -85,6 +86,7 @@ class App extends Component<Props> {
           <img className={ classes.background } alt='' src={ ImageBackgroundMars } />
           <If condition={ !isLoading }>
             <Interface />
+            <Modals />
           </If>
         </div>
       </Provider>

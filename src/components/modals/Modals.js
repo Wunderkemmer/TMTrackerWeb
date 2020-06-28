@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import withStyles from 'react-jss';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -10,12 +10,17 @@ import Button from 'components/Button';
 
 class Modal extends Component {
 
+  squelch = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   renderImage = () => {
     const { classes, type } = this.props;
     const image = type ? RESOURCE_INFOS[type].image : null;
 
     return image ? (
-      <img className={ classes.headerImage } alt='' src={ image } />
+      <img className={ classes.modalHeaderImage } alt='' src={ image } />
     ) : null;
   };
 
@@ -24,41 +29,36 @@ class Modal extends Component {
     const displayTitle = type ? 'Update ' + RESOURCE_INFOS[type].title : title;
 
     return displayTitle ? (
-      <div className={ classes.headerText }>{ displayTitle }</div>
+      <div className={ classes.modalHeaderText }>{ displayTitle }</div>
     ) : null;
   };
 
   render () {
-    const { content, hide, type } = this.props;
+    const { classes, content, hide, type } = this.props;
     const modalStyle = content.publicStyles ? content.publicStyles.popup : null;
-    const headerStyle = { backgroundColor: type ? RESOURCE_INFOS[type].color : '#5B8BDD' };
+    const headerStyle = { backgroundColor: type ? RESOURCE_INFOS[type].color : '#5b8bdd' };
 
     return (
-      <View style={ styles.modal }>
-        <TouchableWithoutFeedback onClick={ hide }>
-          <View style={ styles.overlay } />
-        </TouchableWithoutFeedback>
-        <View style={ [ styles.defaultPopup, modalStyle ] }>
-          <View style={ styles.border }>
-            <View style={ styles.container }>
-              <View style={ [ styles.header, headerStyle ] }>
-                { this.renderImage() }
-                { this.renderTitle() }
-                <View style={ styles.filler } />
-                <Button
-                  style={ styles.button }
-                  backgroundColor="#FF0000"
-                  color="#FFFFFF"
-                  icon="times"
-                  hideShadow={ true }
-                  onClick={ hide }
-                />
-              </View>
-              { React.createElement(content, this.props) }
-            </View>
-          </View>
-        </View>
-      </View>
+      <div className={ classes.modalOverlay } onClick={ hide }>
+        <div className={ classes.modal } onClick={ this.squelch } style={ modalStyle }>
+          <div className={ classes.modalContainer }>
+            <div className={ classes.modalHeader } style={ headerStyle }>
+              { this.renderImage() }
+              { this.renderTitle() }
+              <div className={ classes.modalHeaderFiller } />
+              <Button
+                className={ classes.modalCloseButton }
+                backgroundColor="#FF0000"
+                hideShadow={ true }
+                icon="times"
+                iconColor="#FFFFFF"
+                onClick={ hide }
+              />
+            </div>
+            { React.createElement(content, this.props) }
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -75,85 +75,74 @@ class Modals extends Component {
   }
 
   render () {
-    const { modals } = this.props;
+    const { classes, modals } = this.props;
 
     return (
-      <View style={ styles.modals } pointerEvents="box-none">
+      <div className={ classes.modals }>
         {
           modals.map((props, index) => (
-            <Modal key={ index } { ...props } hide={ () => this.hideModal(props) } />
-          ))
+            <StyledModal key={ index } { ...props } hide={ () => this.hideModal(props) } />)
+          )
         }
-      </View>
+      </div>
     );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
 
-  border: {
-    backgroundColor: '#222222',
-    borderRadius: '0.8rem',
-    margin: '0.2rem',
-    padding: '0.15rem',
-    height: '100%',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowRadius: 2,
-    shadowOpacity: 0.5
-  },
-
-  button: {
-    borderRadius: '0.5rem',
-    maxWidth: '2.3rem',
-    height: '2.3rem'
-  },
-
-  container: {
+  modal: {
     backgroundColor: '#FFFFFF',
-    borderRadius: '0.7rem',
+    minWidth: '50%',
+    height: '95%',
+    border: '0.2rem solid #222222',
+    borderRadius: '1rem',
+    margin: '0.2rem',
+    paddingBottom: '0.75rem',
+    zIndex: 3,
+  },
+
+  modalCloseButton: {
+    borderRadius: '0.5rem',
+    width: '2.3rem',
+    height: '2.3rem',
+    padding: 0
+  },
+
+  modalContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: '0.8rem',
     height: '100%'
   },
 
-  defaultPopup: {
-    backgroundColor: 'transparent',
-    minWidth: '50%',
-    height: '95%',
-    margin: '0.2rem',
-    padding: '0rem',
-    paddingBottom: '0.75rem'
-  },
-
-  filler: {
-    flex: 1
-  },
-
-  frame: {
+  modalFrame: {
     backgroundColor: '#FFFFFF',
     flex: 1,
     width: '85%',
     borderRadius: '1rem'
   },
 
-  header: {
+  modalHeader: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     borderTopRightRadius: '0.7rem',
     borderTopLeftRadius: '0.7rem',
     height: '3.2rem',
-    paddingHorizontal: '0.45rem'
+    padding: '0 0.25rem'
   },
 
-  headerImage: {
+  modalHeaderFiller: {
+    flex: 1
+  },
+
+  modalHeaderImage: {
     width: '2.2rem',
     height: '2.2rem'
   },
 
-  headerText: {
+  modalHeaderText: {
     fontSize: '1.5rem',
     fontWeight: 'bold',
     color: '#222222',
@@ -161,14 +150,17 @@ const styles = ExtendedStyleSheet.create({
     paddingLeft: '0.35rem'
   },
 
-  modal: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  modalOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 2,
     position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   modals: {
@@ -177,18 +169,11 @@ const styles = ExtendedStyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0
-  },
-
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
   }
 
-});
+};
+
+const StyledModal = withStyles(styles)(Modal);
 
 const mapStateToProps = (state) => {
   const { modals } = state.ui;
@@ -204,4 +189,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Modals);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Modals));

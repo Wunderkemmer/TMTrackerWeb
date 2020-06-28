@@ -112,7 +112,7 @@ class Button extends Component {
         onPointerUp={ this.onUp }
         ref={ (ref) => this.buttonRef = ref }
       >
-        <div className={ `${ classes.content } ${ contentClass }` }>
+        <div className={ `${ classes.buttonContent } ${ contentClass }` }>
           <If condition={ icon }>
             <Icon className={ fullIconClass } icon={ icon } />
           </If>
@@ -148,7 +148,7 @@ const styles = {
     display: 'flex'
   },
 
-  content: {
+  buttonContent: {
     display: 'flex',
     flex: 1,
     flexDirection: 'row',

@@ -73,35 +73,33 @@ class Interface extends Component {
     // const oxygenText = oxygen + '%';
     // const temperatureText = (temperature > 0 ? '+' + temperature : temperature) + '°';
 
-
     return (
       <div className={ classes.container }>
         <div className={ classes.panel1 }>
-          <Tracker type={ RESOURCE_TYPES.TERRAFORMING_RATING } />
-
+          <Tracker className={ classes.sideTracker } type={ RESOURCE_TYPES.TERRAFORMING_RATING } />
           <div className={ classes.panelButtons }>
             <div className={ classes.panelButtonsRow }>
               <Button
-                className={ classes.button }
+                className={ classes.panelButton }
                 icon="undo-alt"
                 isDisabled={ isUndoDisabled }
                 onClick={ undo }
               />
               <Button
-                className={ classes.button }
+                className={ classes.panelButton }
                 icon="redo-alt"
                 isDisabled={ isRedoDisabled }
                 onClick={ redo }
               />
             </div>
-            <div style={ styles.panelButtonsRow }>
+            <div className={ classes.panelButtonsRow }>
               <Button
-                className={ classes.button }
+                className={ classes.panelButton }
                 icon="info-circle"
                 onClick={ () => showModal(MODAL_TYPES.INFO) }
               />
               <Button
-                className={ classes.button }
+                className={ classes.panelButton }
                 icon="file"
                 onClick={ this.onNewGame }
               />
@@ -122,21 +120,21 @@ class Interface extends Component {
           </div>
         </div>
         <div className={ classes.panel3 }>
-          <Tracker type={ RESOURCE_TYPES.GENERATION } />
+          <Tracker className={ classes.sideTracker } type={ RESOURCE_TYPES.GENERATION } />
           <div className={ classes.panelButtons }>
             {/*<div style={ styles.panelButtonsRow }>*/}
               <ProjectButton
-                className={ classes.button }
+                className={ classes.projectButton }
                 backgroundColor="#5FB365"
                 projectType={ PROJECT_TYPES.TRADE_PLANTS }
               />
               <ProjectButton
-                className={ classes.button }
+                className={ classes.projectButton }
                 backgroundColor="#ED4E44"
                 projectType={ PROJECT_TYPES.TRADE_HEAT }
               />
               <Button
-                className={ classes.button }
+                className={ classes.panelButton }
                 text="Projects"
                 onClick={ () => showModal(MODAL_TYPES.PROJECTS) }
               />
@@ -145,11 +143,6 @@ class Interface extends Component {
         </div>
       </div>
     );
-
-
-    // return (
-    //   <View style={ styles.container }>
-    //     <View style={ styles.sidebar }>
 
     //       <View style={ styles.sidebarButtonsLeft }>
     //         <View style={ styles.sidebarToggleRow }>
@@ -179,45 +172,11 @@ class Interface extends Component {
     //           </View>
     //         </View>
     //       </View>
-    //     </View>
-
-    //     <View style={ styles.sidebar }>
-    //       <View style={ styles.sidebarTracker }>
-    //         <StyledTracker type={ RESOURCE_TYPES.GENERATION } />
-    //       </View>
-    //       <View style={ styles.sidebarButtonsRight }>
-    //         <ProjectButton
-    //           style={ styles.button }
-    //           backgroundColor="#5FB365"
-    //           projectType={ PROJECT_TYPES.TRADE_PLANTS }
-    //         />
-    //         <ProjectButton
-    //           style={ styles.button }
-    //           backgroundColor="#ED4E44"
-    //           projectType={ PROJECT_TYPES.TRADE_HEAT }
-    //         />
-    //         <Button
-    //           style={ styles.button }
-    //           text="Projects"
-    //           onClick={ () => showModal(MODAL_TYPES.PROJECTS) }
-    //         />
-    //       </View>
-    //     </View>
-    //   </View>
-    // );
   }
 
 }
 
 const styles = {
-
-  button: {
-    maxHeight: '2.6rem',
-    minHeight: '2.6rem',
-    margin: '0.25rem',
-    padding: 0,
-    flex: 1
-  },
 
   container: {
     position: 'absolute',
@@ -226,8 +185,16 @@ const styles = {
     display: 'flex',
   },
 
-  panelButtons: {
+  panelButton: {
+    minHeight: '2.5rem',
+    margin: '0.25rem',
+    padding: 0,
     flex: 1
+  },
+
+  panelButtons: {
+    display: 'flex',
+    flexDirection: 'column'
   },
 
   panelButtonsRow: {
@@ -239,7 +206,9 @@ const styles = {
   panel1: {
     margin: '0.25rem 0 0.25rem 0.25rem',
     zIndex: 1,
-    flex: 1
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column'
   },
 
   panel2: {
@@ -258,59 +227,30 @@ const styles = {
   panel3: {
     margin: '0.25rem 0.25rem 0.25rem 0',
     zIndex: 1,
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column'
+  },
+
+  projectButton: {
+    minHeight: '2.5rem',
+    margin: '0.25rem',
+    padding: 0,
+    flex: 1
+  },
+
+  sideTracker: {
+    minWidth: '7rem',
+    maxHeight: '12rem',
     flex: 1
   }
 
 };
 
-// const styles = ExtendedStyleSheet.create({
-//
-//   button: {
-//     maxHeight: '2.6rem',
-//     minHeight: '2.6rem',
-//     margin: '0.2rem'
-//   },
-//
-//   container: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     paddingHorizontal: '0.25rem'
-//   },
-//
 //   flex: {
 //     flex: 1
 //   },
-//
-//   resources: {
-//     flex: 4,
-//     paddingVertical: '0.25rem'
-//   },
-//
-//   resourcesRow: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     alignItems: 'stretch',
-//     justifyContent: 'center'
-//   },
-//
-//   sidebar: {
-//     flex: 1,
-//     paddingVertical: '0.25rem'
-//   },
-//
-//   sidebarButtonRow: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between'
-//   },
-//
-//   sidebarButtonsLeft: {
-//     flex: 1
-//   },
-//
-//   sidebarButtonsRight: {
-//     flex: 1
-//   },
-//
+
 //   sidebarToggleColumn: {
 //     alignItems: 'center'
 //   },
@@ -323,7 +263,7 @@ const styles = {
 //     marginHorizontal: '0.35rem'
 //   },
 //
-//   sidebarTracker: {
+//   sideTracker: {
 //     flex: 1,
 //     maxHeight: '10rem'
 //   },
@@ -376,18 +316,7 @@ const styles = {
 //     textAlign: 'center',
 //     color: '#00FF00',
 //     marginTop: '0.4rem'
-//   },
-//
-//   tracker: {
-//     margin: '0.2rem'
-//   },
-//
-//   trackerTiny: {
-//     flex: 1,
-//     margin: '0.2rem'
 //   }
-//
-// });
 
 const mapStateToProps = (state) => {
   const { future, history } = state.ui;

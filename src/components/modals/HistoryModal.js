@@ -1,22 +1,18 @@
-import React, { Component, Fragment } from 'react';
+import Ingredient from 'components/Ingredient';
 
-import { FlatList, Text, View } from 'react-native';
+import { getTransactionData } from 'lib/utils';
 
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-
+import React, { Component } from 'react';
+import withStyles from 'react-jss';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { getTransactionData } from '../../lib/utils';
-
-import Ingredient from '../Ingredient';
+import { PROJECT_INFOS } from 'store/game/gameConstants';
 
 class HistoryModal extends Component {
 
-  keyExtractor = (item, index) => `${ item.event }.${ index }`;
-
-  renderHistoryItem = ({ item }) => {
-    const { resourceCounts, resourceProductions } = this.props;
+  renderHistoryItem = (item, index) => {
+    const { classes, resourceCounts, resourceProductions } = this.props;
 
     const {
       costs,
@@ -25,15 +21,15 @@ class HistoryModal extends Component {
     } = getTransactionData(item.transaction, resourceCounts, resourceProductions, true);
 
     return (
-      <Fragment>
-        <Text style={ styles.event }>{ event }</Text>
-        <View style={ styles.row }>
+      <div key={ index } className={ classes.container }>
+        <div style={ classes.event }>{ event }</div>
+        <div style={ classes.row }>
           { costs.map((cost, index) => <Ingredient key={ index } ingredient={ cost } isVerbose="true" />) }
-        </View>
-        <View style={ styles.row }>
+        </div>
+        <div style={ classes.row }>
           { results.map((result, index) => <Ingredient key={ index } ingredient={ result } isVerbose="true" />) }
-        </View>
-      </Fragment>
+        </div>
+      </div>
     );
   };
 
@@ -41,19 +37,21 @@ class HistoryModal extends Component {
     const { history } = this.props;
     const reverseHistory = [ ...history ].reverse();
 
-    return (
-      <FlatList
-        contentContainerStyle={ styles.container }
-        data={ reverseHistory }
-        keyExtractor={ this.keyExtractor }
-        renderItem={ this.renderHistoryItem }
-      />
-    );
+    return reverseHistory.map((item, index) => this.renderHistoryItem(item, index))
+
+    // return (
+    //   <FlatList
+    //     contentContainerStyle={ styles.container }
+    //     data={ reverseHistory }
+    //     keyExtractor={ this.keyExtractor }
+    //     renderItem={ this.renderHistoryItem }
+    //   />
+    // );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
 
   container: {
     alignItems: 'stretch',
@@ -73,38 +71,40 @@ const styles = ExtendedStyleSheet.create({
     flexDirection: 'row'
   },
 
-  textDecrease: {
-    color: '#AA2222'
-  },
+  // textDecrease: {
+  //   color: '#AA2222'
+  // },
+  //
+  // textIncrease: {
+  //   color: '#22AA22'
+  // },
+  //
+  // textTime: {
+  //   fontSize: '0.8rem',
+  //   color: '#222222'
+  // }
 
-  textIncrease: {
-    color: '#22AA22'
-  },
+};
 
-  textTime: {
-    fontSize: '0.8rem',
-    color: '#222222'
-  }
-
-});
-
-const mapStateToProps = (state) => {
-  const { game, ui } = state;
-  const { resourceCounts, resourceProductions } = game;
-  const { future, history } = ui;
+const mapStateToProps = ({
+ game: { resourceCounts, resourceProductions },
+ ui: { future, history }
+}, { projectType }) => {
+  const transactionData = getTransactionData(PROJECT_INFOS[projectType], resourceCounts, resourceProductions);
+  const { canAfford, isCapped } = transactionData;
 
   return {
     future,
     history,
     resourceCounts,
-    resourceProductions
+    resourceProductions,
+    transactionData,
   };
-};
-
+}
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
     /* ... */
   }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HistoryModal);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(HistoryModal));

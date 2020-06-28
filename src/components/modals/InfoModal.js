@@ -1,26 +1,24 @@
 import React, { Component } from 'react';
+import withStyles from 'react-jss';
 
-import { Text, View } from 'react-native';
-
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-
-export default class InfoModal extends Component {
+class InfoModal extends Component {
 
   render () {
     return (
-      <View style={ styles.container }>
-      </View>
+      <div style={ styles.container }>
+      </div>
     );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
 
   container: {
-    alignItems: 'stretch',
-    paddingHorizontal: '2rem',
-    paddingVertical: '1.75rem'
+    display: 'flex',
+    padding: '1rem'
   }
 
-});
+};
+
+export default withStyles(styles)(InfoModal);
