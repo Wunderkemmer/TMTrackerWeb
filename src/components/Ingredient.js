@@ -38,18 +38,7 @@ class Ingredient extends Component {
 
 const styles = {
 
-  image: {
-    width: '1.8rem',
-    height: '1.8rem'
-  },
-
-  imageProduction: {
-    width: '1.3rem',
-    height: '1.3rem'
-  },
-
   frame: {
-    width: '1.8rem',
     height: '1.8rem',
     margin: '0.2rem',
     position: 'relative'
@@ -66,6 +55,14 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  image: {
+    height: '1.8rem'
+  },
+
+  imageProduction: {
+    height: '1.3rem'
   },
 
   value: {

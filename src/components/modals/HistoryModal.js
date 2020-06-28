@@ -1,13 +1,15 @@
+import If from "components/If";
 import Ingredient from 'components/Ingredient';
 
 import { getTransactionData } from 'lib/utils';
 
+import moment from 'moment';
+
 import React, { Component } from 'react';
 import withStyles from 'react-jss';
+import {Icon} from "react-onsenui";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import { PROJECT_INFOS } from 'store/game/gameConstants';
 
 class HistoryModal extends Component {
 
@@ -21,86 +23,113 @@ class HistoryModal extends Component {
     } = getTransactionData(item.transaction, resourceCounts, resourceProductions, true);
 
     return (
-      <div key={ index } className={ classes.container }>
-        <div style={ classes.event }>{ event }</div>
-        <div style={ classes.row }>
-          { costs.map((cost, index) => <Ingredient key={ index } ingredient={ cost } isVerbose="true" />) }
+      <div key={ index } className={ classes.item }>
+        <div className={ classes.headerRow }>
+          <div className={ classes.event }>{ event }</div>
+          <div className={ classes.time }>{ moment(item.time).format('LL LTS') }</div>
         </div>
-        <div style={ classes.row }>
-          { results.map((result, index) => <Ingredient key={ index } ingredient={ result } isVerbose="true" />) }
-        </div>
+        <If condition={ costs.length }>
+          <div className={ classes.statusRow }>
+            <Icon className={ `${ classes.icon } ${ classes.iconDecrease }` } icon={ "minus" } />
+            { costs.map((cost, index) => <Ingredient key={ index } ingredient={ cost } isVerbose="true" />) }
+          </div>
+        </If>
+        <If condition={ results.length }>
+          <div className={ classes.statusRow }>
+            <Icon className={ `${ classes.icon } ${ classes.iconIncrease }` } icon={ "plus" } />
+            { results.map((result, index) => <Ingredient key={ index } ingredient={ result } isVerbose="true" />) }
+          </div>
+        </If>
       </div>
     );
   };
 
   render () {
-    const { history } = this.props;
+    const { classes, history } = this.props;
     const reverseHistory = [ ...history ].reverse();
 
-    return reverseHistory.map((item, index) => this.renderHistoryItem(item, index))
-
-    // return (
-    //   <FlatList
-    //     contentContainerStyle={ styles.container }
-    //     data={ reverseHistory }
-    //     keyExtractor={ this.keyExtractor }
-    //     renderItem={ this.renderHistoryItem }
-    //   />
-    // );
+    return (
+      <div className={ classes.list }>
+        { reverseHistory.map((item, index) => this.renderHistoryItem(item, index)) }
+      </div>
+    );
   }
 
 }
 
 const styles = {
 
-  container: {
-    alignItems: 'stretch',
-    paddingHorizontal: '1rem',
-    paddingTop: '0.5rem',
-    paddingBottom: '1rem'
-  },
-
   event: {
     fontSize: '1.2rem',
     fontWeight: 'bold',
     color: '#333333',
-    marginTop: '-0.175rem'
+    marginBottom: '0.25rem'
   },
 
-  row: {
-    flexDirection: 'row'
+  headerRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
 
-  // textDecrease: {
-  //   color: '#AA2222'
-  // },
-  //
-  // textIncrease: {
-  //   color: '#22AA22'
-  // },
-  //
-  // textTime: {
-  //   fontSize: '0.8rem',
-  //   color: '#222222'
-  // }
+  icon: {
+    fontSize: '1rem',
+    marginRight: '0.25rem',
+    marginLeft: '0.5rem'
+  },
+
+  iconDecrease: {
+    color: '#AA2222'
+  },
+
+  iconIncrease: {
+    color: '#22AA22'
+  },
+
+  item: {
+    alignItems: 'stretch',
+    padding: '0 0.5rem 0.5rem 0.5rem'
+  },
+
+  list: {
+    margin: '0.5rem 0',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    overflowY: 'scroll',
+    overflowX: 'hidden',
+
+    '& > :last-child': {
+      paddingBottom: 0
+    }
+  },
+
+  statusRow: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+
+  time: {
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    color: '#999999'
+  }
 
 };
 
 const mapStateToProps = ({
  game: { resourceCounts, resourceProductions },
  ui: { future, history }
-}, { projectType }) => {
-  const transactionData = getTransactionData(PROJECT_INFOS[projectType], resourceCounts, resourceProductions);
-  const { canAfford, isCapped } = transactionData;
+}, { projectType }) => ({
+  future,
+  history,
+  resourceCounts,
+  resourceProductions
+});
 
-  return {
-    future,
-    history,
-    resourceCounts,
-    resourceProductions,
-    transactionData,
-  };
-}
+
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
     /* ... */

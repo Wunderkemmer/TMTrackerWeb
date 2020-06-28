@@ -41,20 +41,20 @@ class Modal extends Component {
     return (
       <div className={ classes.modalOverlay } onClick={ hide }>
         <div className={ classes.modal } onClick={ this.squelch } style={ modalStyle }>
-          <div className={ classes.modalContainer }>
-            <div className={ classes.modalHeader } style={ headerStyle }>
-              { this.renderImage() }
-              { this.renderTitle() }
-              <div className={ classes.modalHeaderFiller } />
-              <Button
-                className={ classes.modalCloseButton }
-                backgroundColor="#FF0000"
-                hideShadow={ true }
-                icon="times"
-                iconColor="#FFFFFF"
-                onClick={ hide }
-              />
-            </div>
+          <div className={ classes.modalHeader } style={ headerStyle }>
+            { this.renderImage() }
+            { this.renderTitle() }
+            <div className={ classes.modalHeaderFiller } />
+            <Button
+              className={ classes.modalCloseButton }
+              backgroundColor="#FF0000"
+              hideShadow={ true }
+              icon="times"
+              iconColor="#FFFFFF"
+              onClick={ hide }
+            />
+          </div>
+          <div className={ classes.modalContent } >
             { React.createElement(content, this.props) }
           </div>
         </div>
@@ -99,8 +99,9 @@ const styles = {
     border: '0.2rem solid #222222',
     borderRadius: '1rem',
     margin: '0.2rem',
-    paddingBottom: '0.75rem',
     zIndex: 3,
+    display: 'flex',
+    flexDirection: 'column'
   },
 
   modalCloseButton: {
@@ -110,27 +111,20 @@ const styles = {
     padding: 0
   },
 
-  modalContainer: {
+  modalContent: {
     backgroundColor: '#FFFFFF',
     borderRadius: '0.8rem',
-    height: '100%'
-  },
-
-  modalFrame: {
-    backgroundColor: '#FFFFFF',
-    flex: 1,
-    width: '85%',
-    borderRadius: '1rem'
+    position: 'relative',
+    flex: 1
   },
 
   modalHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
     borderTopRightRadius: '0.7rem',
     borderTopLeftRadius: '0.7rem',
     height: '3.2rem',
-    padding: '0 0.25rem'
+    padding: '0 0.25rem',
+    display: 'flex',
+    alignItems: 'center'
   },
 
   modalHeaderFiller: {
