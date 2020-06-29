@@ -64,6 +64,7 @@ const styles = {
 
   container: {
     display: 'flex',
+    flex: 1,
     padding: '1rem'
   }
 
