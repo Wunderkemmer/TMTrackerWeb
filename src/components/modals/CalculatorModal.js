@@ -1,28 +1,26 @@
 import Color from 'color';
 
-import React, { Component, Fragment } from 'react';
+import Button from 'components/Button';
+import Ingredient from "components/Ingredient";
 
-import { ImageBackground, Text, TouchableOpacity, View } from 'react-native';
-
-import ExtendedStyleSheet from 'react-native-extended-stylesheet';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import React, { Component } from 'react';
+import withStyles from 'react-jss';
+import { Icon } from 'react-onsenui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { changeCounts } from '../../store/game/gameActions';
-import { RESOURCE_INFOS, RESOURCE_TYPES } from '../../store/game/gameConstants';
-
-import Button from '../Button';
+import { changeCounts } from 'store/game/gameActions';
+import { RESOURCE_INFOS, RESOURCE_TYPES } from 'store/game/gameConstants';
 
 class CalculatorModal extends Component {
 
-  static publicStyles = ExtendedStyleSheet.create({
+  static publicStyles = {
     popup: {
       width: '75%',
-      maxHeight: '24rem'
+      height: 'auto',
+      minHeight: '24rem'
     }
-  });
+  };
 
   static defaultProps = {
     type: RESOURCE_TYPES.MEGACREDITS
@@ -38,7 +36,7 @@ class CalculatorModal extends Component {
       titanium: 0
     },
 
-    useResource: {
+    useResources: {
       heat: false,
       steel: false,
       titanium: false
@@ -46,35 +44,35 @@ class CalculatorModal extends Component {
   };
 
   capResourceValues () {
-    const { state } = this;
+    const { change, resourceChanges, useResources } = this.state;
 
-    if (state.useResource.heat) {
-      while (state.resourceChanges.heat > 0 && this.getResourcesValue() > -state.change) {
-        state.resourceChanges.heat--;
+    if (useResources.heat) {
+      while (resourceChanges.heat > 0 && this.getResourcesValue() > -change) {
+        resourceChanges.heat--;
       }
     }
 
-    if (state.useResource.steel) {
-      while (state.resourceChanges.steel > 0 && this.getResourcesValue() > -state.change) {
-        state.resourceChanges.steel--;
+    if (useResources.steel) {
+      while (resourceChanges.steel > 0 && this.getResourcesValue() > -change) {
+        resourceChanges.steel--;
       }
     }
 
-    if (state.useResource.titanium) {
-      while (state.resourceChanges.titanium > 0 && this.getResourcesValue() > -state.change) {
-        state.resourceChanges.titanium--;
+    if (useResources.titanium) {
+      while (resourceChanges.titanium > 0 && this.getResourcesValue() > -change) {
+        resourceChanges.titanium--;
       }
     }
   }
 
   getResourcesValue () {
-    const { state } = this;
+    const { change, resourceChanges, useResources } = this.state;
 
-    return state.change > 0 ?
+    return change > 0 ?
       0 :
-      (state.useResource.heat ? state.resourceChanges.heat : 0) +
-      (state.useResource.steel ? state.resourceChanges.steel * 2 : 0) +
-      (state.useResource.titanium ? state.resourceChanges.titanium * 3 : 0);
+      (useResources.heat ? resourceChanges.heat * RESOURCE_INFOS[RESOURCE_TYPES.HEAT].multiplier : 0) +
+      (useResources.steel ? resourceChanges.steel * RESOURCE_INFOS[RESOURCE_TYPES.STEEL].multiplier : 0) +
+      (useResources.titanium ? resourceChanges.titanium * RESOURCE_INFOS[RESOURCE_TYPES.TITANIUM].multiplier : 0);
   }
 
   onAdjustResource (type, value) {
@@ -94,23 +92,23 @@ class CalculatorModal extends Component {
   }
 
   onChange = () => {
-    const { state } = this;
+    const { change, resourceChanges, useResources } = this.state;
     const { hide, type } = this.props;
 
     const countChanges = {
-      [type]: state.change + this.getResourcesValue()
+      [type]: change + this.getResourcesValue()
     };
 
-    if (state.useResource.heat) {
-      countChanges[RESOURCE_TYPES.HEAT] = -state.resourceChanges.heat;
+    if (useResources.heat) {
+      countChanges[RESOURCE_TYPES.HEAT] = -resourceChanges.heat;
     }
 
-    if (state.useResource.steel) {
-      countChanges[RESOURCE_TYPES.STEEL] = -state.resourceChanges.steel;
+    if (useResources.steel) {
+      countChanges[RESOURCE_TYPES.STEEL] = -resourceChanges.steel;
     }
 
-    if (state.useResource.titanium) {
-      countChanges[RESOURCE_TYPES.TITANIUM] = -state.resourceChanges.titanium;
+    if (useResources.titanium) {
+      countChanges[RESOURCE_TYPES.TITANIUM] = -resourceChanges.titanium;
     }
 
     this.props.actions.changeCounts(countChanges, 'Calculator Adjustment');
@@ -119,14 +117,14 @@ class CalculatorModal extends Component {
   };
 
   onFastForwardResource = (type) => {
-    const { state } = this;
+    const { change, resourceChanges } = this.state;
     const { resourceCounts } = this.props;
 
     // Calculate the max number of resources we can add
 
     const value = Math.min(
-      Math.floor(-(state.change + this.getResourcesValue()) / RESOURCE_INFOS[type].multiplier),
-      resourceCounts[type] - state.resourceChanges[type]
+      Math.floor(-(change + this.getResourcesValue()) / RESOURCE_INFOS[type].multiplier),
+      resourceCounts[type] - resourceChanges[type]
     );
 
     this.onAdjustResource(type, value);
@@ -172,12 +170,12 @@ class CalculatorModal extends Component {
   onToggle = (type) => {
     const { state } = this;
 
-    state.useResource[type] = !state.useResource[type];
+    state.useResources[type] = !state.useResources[type];
 
     if (type === RESOURCE_TYPES.STEEL) {
-      state.useResource.titanium = false;
+      state.useResources.titanium = false;
     } else if (type === RESOURCE_TYPES.TITANIUM) {
-      state.useResource.steel = false;
+      state.useResources.steel = false;
     }
 
     this.capResourceValues();
@@ -185,143 +183,121 @@ class CalculatorModal extends Component {
   };
 
   renderActionButton = () => {
-    const { state } = this;
-    const { type, resourceCounts } = this.props;
+    const { classes, type, resourceCounts } = this.props;
+    const { change } = this.state;
 
-    const total = resourceCounts[type] + state.change + this.getResourcesValue();
-    const isDisabled = state.change === 0 || total < 0;
+    const total = resourceCounts[type] + change + this.getResourcesValue();
+    const isDisabled = change === 0 || total < 0;
     const threshold = RESOURCE_INFOS[type].usePositiveCalculator ? -1 : 0;
-    const backgroundColor = state.change <= threshold ? '#ED4E44' : '#5FB365';
+    const backgroundColor = change <= threshold ? '#ED4E44' : '#5FB365';
 
     return (
       <Button
-        style={ styles.actionButton }
+        className={ classes.actionButton }
+        contentClass={ classes.actionButtonContent }
         backgroundColor={ backgroundColor }
         isDisabled={ isDisabled }
         onClick={ this.onChange }
       >
-        <View style={ styles.actionButtonRow }>
-          <Text style={ styles.actionText }>New Total:</Text>
-          <Text style={ styles.actionChangeText }>{ total }</Text>
-        </View>
+        <div className={ classes.actionText }>New Total:</div>
+        <div className={ classes.actionChangeText }>{ total }</div>
       </Button>
     );
   };
 
   renderAdditionalResource = (type) => {
-    const { state } = this;
-    const { resourceCounts } = this.props;
-
+    const { classes, resourceCounts } = this.props;
+    const { change, resourceChanges, useResources } = this.state;
     const resourceCount = resourceCounts[type];
-    const useResource = state.useResource[type];
+    const useResource = useResources[type];
 
     if (!resourceCount || !useResource) {
       return null;
     }
 
-    const resourceChange = state.resourceChanges[type];
+    const resourceChange = resourceChanges[type];
     const resourceTotal = resourceCount - resourceChange;
-
     const { color, image, multiplier } = RESOURCE_INFOS[type];
     const isDownDisabled = resourceChange === 0;
+    const isUpDisabled = !change || resourceTotal <= 0 || this.getResourcesValue() + multiplier > -change;
 
-    const isUpDisabled =
-      resourceTotal <= 0 ||
-      this.getResourcesValue() + multiplier > -state.change;
+    const resourceImageClass = isDownDisabled && isUpDisabled ?
+      classes.resourceImageDisabled :
+      classes.resourceImage;
 
-    const resourceImageStyle = isDownDisabled && isUpDisabled ?
-      styles.resourceImageDisabled :
-      styles.resourceImage;
-
-    const resourceChangeTextStyle = isDownDisabled && isUpDisabled ?
-      styles.resourceChangeTextDisabled :
-      styles.resourceChangeText;
+    const resourceChangeTextClass = isDownDisabled && isUpDisabled ?
+      classes.resourceChangeTextDisabled :
+      classes.resourceChangeText;
 
     const colorStyle = { color: type ? color : '#222222' };
     const resourcesText = '+' + resourceChange * multiplier;
 
     return (
-      <View style={ styles.tabulatorTab }>
-        <View style={ styles.resourceAdjuster }>
+      <div className={ classes.tabulatorTab }>
+        <div className={ classes.resourceAdjuster }>
           { this.renderResourceButton(type, 'minus', () => this.onAdjustResource(type, -1), isDownDisabled) }
-          <ImageBackground style={ resourceImageStyle } resizeMode="contain" source={ image }>
-            { this.renderAdditionalResourceCount(type) }
-          </ImageBackground>
+          <Ingredient className={ resourceImageClass } ingredient={ { image, type, value: resourceChanges[type] } } />
           { this.renderResourceButton(type, 'plus', () => this.onAdjustResource(type, 1), isUpDisabled) }
           { this.renderResourceButton(type, 'chevron-right', () => this.onFastForwardResource(type), isUpDisabled) }
-        </View>
-        <Text style={ [ resourceChangeTextStyle, colorStyle ] }>{ resourcesText }</Text>
-      </View>
-    );
-  };
-
-  renderAdditionalResourceCount = (type) => {
-    const { state } = this;
-
-    const resourceChange = state.resourceChanges[type];
-
-    if (!resourceChange) {
-      return null;
-    }
-
-    return (
-      <Fragment>
-        <View style={ styles.resourceTint } />
-        <Text style={ styles.resourceText }>{ resourceChange }</Text>
-      </Fragment>
+        </div>
+        <div className={ resourceChangeTextClass } style={ colorStyle }>{ resourcesText }</div>
+      </div>
     );
   };
 
   renderKeyPadButton = (value, backgroundColor, isSmall) => {
+    const { classes } = this.props;
+
     if (value === '±') {
       return (
         <Button
-          style={ styles.button }
+          className={ classes.button }
+          contentClass={ classes.buttonPlusMinus }
           backgroundColor={ backgroundColor }
-          color="#222222"
-          onClick={ () => this.onKeyPad(value) }
+          onClick={() => this.onKeyPad(value)}
         >
-          <View style={ styles.keyPadPlusMinus }>
-            <Text style={ styles.keyPadPlusMinusText }>+</Text>
-            <Text style={ styles.keyPadPlusMinusText }>-</Text>
-          </View>
+          +<br />-
         </Button>
       );
-    } else {
-      const textStyle = isSmall ? styles.keyPadTextSmall : styles.keyPadTextLarge;
-
-      const text = typeof value === 'string' ?
-        value :
-        value >= 0 ? '+' + value : value;
-
-      return (
-        <Button
-          style={ styles.button }
-          backgroundColor={ backgroundColor }
-          color="#222222"
-          text={ text }
-          textStyle={ textStyle }
-          onClick={ () => this.onKeyPad(value) }
-        />
-      );
     }
+
+    const text = typeof value === 'string' ? value : value >= 0 ? '+' + value : value;
+    const textClass = isSmall ? classes.keyPadTextSmall : classes.keyPadTextLarge;
+
+    return (
+      <Button
+        className={ classes.button }
+        backgroundColor={ backgroundColor }
+        onClick={ () => this.onKeyPad(value) }
+        text={ text }
+        textClass={ textClass }
+        textColor="#222222"
+      />
+    );
   };
 
   renderResourceButton = (type, icon, onClick, isDisabled) => {
-    const { type: calculatorType } = this.props;
+    const { classes, type: calculatorType } = this.props;
 
-    const style = isDisabled ? styles.resourceDisabled : null;
+    const className = isDisabled ? classes.resourceDisabled : classes.resource;
     const colorStyle = { color: RESOURCE_INFOS[calculatorType].color };
 
     return (
-      <TouchableOpacity style={ style } disabled={ isDisabled } onClick={ onClick }>
-        <FontAwesome5 style={ [ styles.resourceButton, colorStyle ] } name={ icon } />
-      </TouchableOpacity>
+      <Button
+        className={ className }
+        icon={ icon }
+        iconClass={ classes.resourceButton }
+        iconStyle={ colorStyle }
+        isBackgroundVisible={ false }
+        isDisabled={ isDisabled }
+        onClick={ onClick }
+        showBackground={ false }
+      />
     );
   };
 
   renderResourceToggleButtons = () => {
-    const { type } = this.props;
+    const { classes, type } = this.props;
 
     if (type !== RESOURCE_TYPES.MEGACREDITS) {
       return null;
@@ -330,14 +306,14 @@ class CalculatorModal extends Component {
     const toggleTypes = [ RESOURCE_TYPES.HEAT, RESOURCE_TYPES.STEEL, RESOURCE_TYPES.TITANIUM ];
 
     return (
-      <View style={ styles.toggleButtons }>
+      <div className={ classes.toggleButtons }>
         { toggleTypes.map((type) => this.renderToggleButton(type)) }
-      </View>
+      </div>
     );
   };
 
   renderToggleButton = (type) => {
-    const { resourceCounts } = this.props;
+    const { classes, resourceCounts } = this.props;
 
     if (!resourceCounts[type]) {
       return null;
@@ -347,40 +323,32 @@ class CalculatorModal extends Component {
     const image = resourceInfo.image;
 
     return (
-      <TouchableOpacity
+      <Button
         key={ type }
-        style={ styles.toggleButton }
+        className={ classes.toggleButton }
         onClick={ () => this.onToggle(type) }
+        isBackgroundVisible={ false }
       >
-        <ImageBackground
-          style={ styles.toggleButtonResourceImage }
-          resizeMode="contain"
-          source={ image }
-        >
-          { this.renderToggleIcon(type) }
-        </ImageBackground>
-      </TouchableOpacity>
+        <img className={ classes.toggleButtonResourceImage } alt='' src={ image } />
+        { this.renderToggleIcon(type) }
+      </Button>
     );
   };
 
   renderToggleIcon = (type) => {
-    const { useResource } = this.state;
+    const { classes } = this.props;
+    const { useResources } = this.state;
 
-    if (!useResource[type]) {
-      return null;
-    }
-
-    return (
-      <Fragment>
-        <View style={ styles.resourceTint } />
-        <FontAwesome5 style={ styles.toggleButtonIcon } name="chevron-circle-down" solid={ true } />
-      </Fragment>
-    );
+    return useResources[type] ? (
+      <div className={ classes.resourceTint }>
+        <Icon className={ classes.toggleButtonIcon } icon="chevron-circle-down" />
+      </div>
+    ) : null;
   };
 
   render () {
+    const { classes,resourceCounts, type } = this.props;
     const { change, isNegativeZero } = this.state;
-    const { resourceCounts, type } = this.props;
 
     const resourceCount = resourceCounts[type];
     const resourceInfo = RESOURCE_INFOS[type];
@@ -389,79 +357,79 @@ class CalculatorModal extends Component {
 
     const color = Color(resourceInfo.color);
     const white = Color('#FFFFFF');
-    const lighterColor = color.mix(white, 0.65);
+    const lighterColor = color.mix(white, 0.65).toString();
 
     const changeText = isNegativeZero ? '-0' : change >= 0 ? '+' + change : change;
 
     return (
-      <View style={ styles.container }>
+      <div className={ classes.container }>
         { this.renderResourceToggleButtons() }
-        <View style={ [ styles.keyPad, backgroundColorStyle ] }>
-          <View style={ styles.numPad }>
-            <View style={ styles.keyPadRow }>
+        <div className={ classes.keyPad } style={ backgroundColorStyle }>
+          <div className={ classes.numPad }>
+            <div className={ classes.keyPadRow }>
               { this.renderKeyPadButton('7', '#FFFFFF') }
               { this.renderKeyPadButton('8', '#FFFFFF') }
               { this.renderKeyPadButton('9', '#FFFFFF') }
-            </View>
-            <View style={ styles.keyPadRow }>
+            </div>
+            <div className={ classes.keyPadRow }>
               { this.renderKeyPadButton('4', '#FFFFFF') }
               { this.renderKeyPadButton('5', '#FFFFFF') }
               { this.renderKeyPadButton('6', '#FFFFFF') }
-            </View>
-            <View style={ styles.keyPadRow }>
+            </div>
+            <div className={ classes.keyPadRow }>
               { this.renderKeyPadButton('1', '#FFFFFF') }
               { this.renderKeyPadButton('2', '#FFFFFF') }
               { this.renderKeyPadButton('3', '#FFFFFF') }
-            </View>
-            <View style={ styles.keyPadRow }>
+            </div>
+            <div className={ classes.keyPadRow }>
               { this.renderKeyPadButton('C', lighterColor) }
               { this.renderKeyPadButton('0', '#FFFFFF') }
               { this.renderKeyPadButton('±', lighterColor) }
-            </View>
-          </View>
-          <View style={ styles.steppers }>
+            </div>
+          </div>
+          <div className={ classes.steppers }>
             { this.renderKeyPadButton(5, lighterColor, true) }
             { this.renderKeyPadButton(1, lighterColor, true) }
             { this.renderKeyPadButton(-1, lighterColor, true) }
             { this.renderKeyPadButton(-5, lighterColor, true) }
-          </View>
-        </View>
-        <View style={ styles.tabulator }>
-          <View style={ styles.tabulatorRow }>
-            <Text style={ [ styles.tabulatorText, colorStyle ] }>{ `Current:` }</Text>
-            <Text style={ [ styles.currentText, colorStyle ] }>
+          </div>
+        </div>
+        <div className={ classes.tabulator }>
+          <div className={ classes.tabulatorRow }>
+            <div className={ classes.tabulatorText } style={ colorStyle }>{ `Current:` }</div>
+            <div className={ classes.currentText } style={ colorStyle }>
               { resourceCount }
-            </Text>
-          </View>
-          <View style={ [ styles.keyPadTab, backgroundColorStyle ] }>
-            <Text style={ styles.keyPadTabText }>{ `Change:` }</Text>
-            <Text style={ styles.changeText }>{ changeText }</Text>
-          </View>
+            </div>
+          </div>
+          <div className={ classes.keyPadTab } style={ backgroundColorStyle }>
+            <div className={ classes.keyPadTabText }>{ `Change:` }</div>
+            <div className={ classes.changeText }>{ changeText }</div>
+          </div>
           { this.renderAdditionalResource(RESOURCE_TYPES.HEAT) }
           { this.renderAdditionalResource(RESOURCE_TYPES.STEEL) }
           { this.renderAdditionalResource(RESOURCE_TYPES.TITANIUM) }
           { this.renderActionButton() }
-        </View>
-      </View>
+        </div>
+      </div>
     );
   }
 
 }
 
-const styles = ExtendedStyleSheet.create({
+const styles = {
 
   actionButton: {
     borderRadius: '0.5rem',
-    marginLeft: '0.5rem'
+    marginTop: '0.5rem',
+    marginLeft: '0.5rem',
+    paddingLeft: '0.55rem',
+    paddingRight: '0.25rem',
+    flex: 1
   },
 
-  actionButtonRow: {
-    flex: 1,
-    flexDirection: 'row',
+  actionButtonContent: {
+    display: 'flex',
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    paddingLeft: '0.55rem',
-    paddingRight: '0.25rem'
   },
 
   actionChangeText: {
@@ -481,7 +449,16 @@ const styles = ExtendedStyleSheet.create({
   },
 
   button: {
-    margin: '0.2rem'
+    margin: '0.2rem',
+    padding: 0,
+    flex: 1
+  },
+
+  buttonPlusMinus: {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    lineHeight: '1rem',
+    textAlign: 'center'
   },
 
   changeText: {
@@ -491,10 +468,11 @@ const styles = ExtendedStyleSheet.create({
   },
 
   container: {
+    padding: '0.5rem',
+    display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'stretch',
-    padding: '0.5rem'
+    alignItems: 'stretch'
   },
 
   currentText: {
@@ -506,10 +484,10 @@ const styles = ExtendedStyleSheet.create({
   },
 
   keyPad: {
-    flex: 1.1,
-    flexDirection: 'row',
     borderRadius: '0.5rem',
-    padding: '0.5rem'
+    padding: '0.5rem',
+    display: 'flex',
+    flex: 1
   },
 
   keyPadButton: {
@@ -517,20 +495,21 @@ const styles = ExtendedStyleSheet.create({
   },
 
   keyPadRow: {
-    flex: 1,
-    flexDirection: 'row'
+    display: 'flex',
+    flex: 1
   },
 
   keyPadTab: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
     borderTopRightRadius: '0.5rem',
     borderBottomRightRadius: '0.5rem',
     paddingRight: '0.5rem',
     paddingLeft: '0.6rem',
-    marginBottom: '0.5rem',
-    marginLeft: '-0.1rem'
+    // marginBottom: '0.5rem',
+    marginLeft: '-0.1rem',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
   },
 
   keyPadTabText: {
@@ -542,13 +521,9 @@ const styles = ExtendedStyleSheet.create({
   },
 
   keyPadPlusMinus: {
-    marginTop: '0.1rem'
-  },
-
-  keyPadPlusMinusText: {
     fontSize: '2.2rem',
     textAlign: 'center',
-    marginVertical: '-0.65rem'
+    marginTop: '-0.65rem 0.1rem -0.65rem 0'
   },
 
   keyPadTextLarge: {
@@ -560,16 +535,23 @@ const styles = ExtendedStyleSheet.create({
   },
 
   numPad: {
+    display: 'flex',
+    flexDirection: 'column',
     flex: 3
   },
 
+  resource: {
+    padding: 0
+  },
+
   resourceAdjuster: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     width: '8rem',
     marginLeft: '0.15rem',
-    marginRight: '0.25rem'
+    marginRight: '0.25rem',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
 
   resourceButton: {
@@ -593,22 +575,25 @@ const styles = ExtendedStyleSheet.create({
   },
 
   resourceDisabled: {
+    padding: 0,
     opacity: 0.25
   },
 
   resourceImage: {
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '2.2rem',
-    height: '2.2rem'
+    height: '2.2rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   resourceImageDisabled: {
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '2.2rem',
     height: '2.2rem',
-    opacity: 0.5
+    opacity: 0.5,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   resourcesText: {
@@ -628,35 +613,49 @@ const styles = ExtendedStyleSheet.create({
 
   resourceTint: {
     backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textShadowColor: '#000000',
+    textShadowOffset: { height: 0.1 },
+    textShadowRadius: 5,
+    padding: '0.1rem',
     position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
-    padding: '0.1rem'
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   steppers: {
+    marginLeft: '0.5rem',
+    display: 'flex',
     flex: 1,
-    marginLeft: '0.5rem'
+    flexDirection: 'column'
   },
 
   tabulator: {
+    display: 'flex',
     flex: 1,
+    flexDirection: 'column',
     alignItems: 'stretch'
   },
 
   tabulatorRow: {
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
 
   tabulatorTab: {
+    marginLeft: '0.5rem',
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginLeft: '0.5rem',
-    marginBottom: '0.5rem'
+    justifyContent: 'space-between'
   },
 
   tabulatorText: {
@@ -667,9 +666,11 @@ const styles = ExtendedStyleSheet.create({
   },
 
   toggleButton: {
+    marginLeft: '0.5rem',
+    position: 'relative',
+    display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: '0.5rem'
+    justifyContent: 'center'
   },
 
   toggleButtonIcon: {
@@ -681,20 +682,21 @@ const styles = ExtendedStyleSheet.create({
   },
 
   toggleButtonResourceImage: {
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '2.2rem',
-    height: '2.2rem'
+    height: '2.2rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   toggleButtons: {
-    flexDirection: 'row',
+    display: 'flex',
     position: 'absolute',
     top: '-2.7rem',
     right: '3.25rem'
   }
 
-});
+};
 
 const mapStateToProps = (state) => {
   const { game } = state;
@@ -710,4 +712,4 @@ const mapDispatchToProps = (dispatch) => ({
   }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CalculatorModal);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CalculatorModal));

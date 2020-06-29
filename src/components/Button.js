@@ -91,8 +91,10 @@ class Button extends Component {
       contentClass,
       icon,
       iconClass,
+      iconStyle,
       text,
       textClass,
+      textStyle,
     } = this.props;
 
     const { isPressed, showPressed } = this.state;
@@ -117,10 +119,10 @@ class Button extends Component {
       >
         <div className={ `${ classes.buttonContent } ${ contentClass }` }>
           <If condition={ icon }>
-            <Icon className={ fullIconClass } icon={ icon } />
+            <Icon className={ fullIconClass } style={ iconStyle } icon={ icon } />
           </If>
           <If condition={ text }>
-            <div className={ fullTextClass }>{ text }</div>
+            <div className={ fullTextClass } style={ textStyle }>{ text }</div>
           </If>
           { children }
         </div>

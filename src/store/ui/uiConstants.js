@@ -1,4 +1,4 @@
-// import CalculatorModal from 'components/modals/CalculatorModal';
+import CalculatorModal from 'components/modals/CalculatorModal';
 import HistoryModal from 'components/modals/HistoryModal';
 import InfoModal from 'components/modals/InfoModal';
 import ProjectsModal from 'components/modals/ProjectsModal';
@@ -13,7 +13,7 @@ export const MODAL_TYPES = {
 export const MODAL_INFOS = {
 
   [MODAL_TYPES.CALCULATOR]: {
-    // content: CalculatorModal,
+    content: CalculatorModal,
     title: 'Calculator'
   },
 

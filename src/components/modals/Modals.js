@@ -115,6 +115,7 @@ const styles = {
     backgroundColor: '#FFFFFF',
     borderRadius: '0.8rem',
     position: 'relative',
+    display: 'flex',
     flex: 1
   },
 
@@ -122,7 +123,7 @@ const styles = {
     borderTopRightRadius: '0.7rem',
     borderTopLeftRadius: '0.7rem',
     height: '3.2rem',
-    padding: '0 0.25rem',
+    padding: '0 0.25rem 0 0.5rem',
     display: 'flex',
     alignItems: 'center'
   },

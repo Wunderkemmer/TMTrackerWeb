@@ -10,18 +10,16 @@ const { abs } = Math;
 class Ingredient extends Component {
 
   render () {
-    const { classes, ingredient, isVerbose } = this.props;
-    const { image, isProduction, type, value } = ingredient;
-    const resourceInfo = RESOURCE_INFOS[type];
-    const isHidden = resourceInfo.hideIngredient && !isVerbose;
+    const { classes, ingredient: { isProduction, type, value }, isVerbose } = this.props;
+    const { hideIngredient, hideValue, image } = RESOURCE_INFOS[type];
 
-    if (!image || isHidden) {
+    if (!image || (hideIngredient && !isVerbose)) {
       return null;
     }
 
     const frameClass = isProduction ? classes.frameProduction : classes.frame;
     const imageClass = isProduction ? classes.imageProduction : classes.image;
-    const absValue = resourceInfo.hideValue ? 0 : abs(value);
+    const absValue = hideValue ? 0 : abs(value);
     const displayValue = absValue > 1 ? absValue : null;
 
     return (
