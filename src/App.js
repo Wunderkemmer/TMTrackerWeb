@@ -19,12 +19,12 @@ import { setHistory, startGame } from 'store/ui/uiActions';
 
 onsenui.disableAutoStyling();
 
-// window.oncontextmenu = function(event) {
-//
-// event.preventDefault();
-// event.stopPropagation();
-//   return false;
-// };
+window.oncontextmenu = function(event) {
+
+event.preventDefault();
+event.stopPropagation();
+  return false;
+};
 
 class App extends Component {
 
@@ -39,7 +39,7 @@ class App extends Component {
       history = JSON.parse(history);
 
       const {
-        gameState: { oceans, oxygen, temperature },
+        gameState: { resourceCounts: { oceans, oxygen, temperature } },
         transaction: { event }
       } = history[history.length - 1];
 
