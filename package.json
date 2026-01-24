@@ -9,7 +9,7 @@
     "color": "^3.1.2",
     "eventemitter3": "^4.0.0",
     "immutable": "^4.0.0-rc.12",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "moment": "^2.24.0",
     "onsenui": "^2.10.10",
     "react": "^16.12.0",
